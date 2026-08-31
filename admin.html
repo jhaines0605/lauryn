@@ -110,8 +110,12 @@ details.panel summary{cursor:pointer;font-family:var(--label);font-size:11px;let
     <div class="warn">The token is saved in this browser only — never in the repo, never visible on the live site.
       If it ever leaks, the worst anyone can do is edit this one file. Revoke it in GitHub settings and make a new one.</div>
     <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap">
-      <button id="ghSave">Save settings</button><button id="ghClear" class="danger">Forget token</button>
+      <button id="ghSave">Save settings</button>
+      <button id="ghTest">Test connection</button>
+      <button id="ghClear" class="danger">Forget token</button>
     </div>
+    <pre id="ghResult" style="white-space:pre-wrap;font-family:var(--label);font-size:12px;
+      background:#F3F0E9;padding:12px;margin-top:12px;display:none"></pre>
   </details>
 
   <details class="panel">
@@ -310,6 +314,47 @@ $('btnDownload').addEventListener('click', () => {
 const GH = ['ghOwner','ghRepo','ghBranch','ghPath','ghToken'];
 GH.forEach(k => $(k).value = localStorage.getItem('lh_'+k) || (k==='ghBranch'?'main':k==='ghPath'?'works.js':''));
 $('ghSave').addEventListener('click', () => { GH.forEach(k => localStorage.setItem('lh_'+k, $(k).value.trim())); toast('Saved on this device'); });
+$('ghTest').addEventListener('click', async () => {
+  const out = $('ghResult'); out.style.display = 'block';
+  const lines = [];
+  const say = t => { lines.push(t); out.textContent = lines.join('\n'); };
+
+  say('Page origin: ' + location.origin);
+  if (location.protocol === 'file:')
+    return say('FAIL — opened as a local file. Publishing needs the live https:// URL.');
+
+  say('1/3 reaching api.github.com ...');
+  try {
+    const r = await fetch('https://api.github.com/rate_limit');
+    say('    OK (' + r.status + ') — network is fine');
+  } catch (e) {
+    return say('    BLOCKED — something is stopping requests to api.github.com.\n' +
+               '    Try incognito, or disable ad/privacy blockers for this page.');
+  }
+
+  const owner=$('ghOwner').value.trim(), repo=$('ghRepo').value.trim(),
+        branch=$('ghBranch').value.trim()||'main', path=$('ghPath').value.trim()||'works.js',
+        token=$('ghToken').value.trim();
+  if(!owner||!repo||!token) return say('2/3 missing username, repo, or token.');
+
+  say('2/3 checking the token ...');
+  try {
+    const r = await fetch('https://api.github.com/user', {headers:{Authorization:'Bearer '+token, Accept:'application/vnd.github+json'}});
+    if (r.status === 401) return say('    FAIL — token rejected. It may be expired or mistyped.');
+    say('    OK — token accepted (' + ((await r.json()).login || '?') + ')');
+  } catch (e) { return say('    BLOCKED — ' + e.message); }
+
+  say('3/3 checking the file ...');
+  try {
+    const r = await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/${path}?ref=${branch}&t=`+Date.now(),
+      {headers:{Authorization:'Bearer '+token, Accept:'application/vnd.github+json'}});
+    if (r.status === 404) return say('    Not found. Check username / repo / branch / path. (A first publish will create it.)');
+    if (r.status === 403) return say('    FAIL — token lacks Contents: Read and write on this repo.');
+    if (!r.ok) return say('    FAIL — HTTP ' + r.status);
+    say('    OK — everything checks out. Publish should work.');
+  } catch (e) { say('    BLOCKED — ' + e.message); }
+});
+
 $('ghClear').addEventListener('click', () => { GH.forEach(k => { localStorage.removeItem('lh_'+k); $(k).value=''; }); toast('Cleared'); });
 
 function b64(str){
@@ -323,14 +368,17 @@ $('btnCommit').addEventListener('click', async () => {
   const owner=$('ghOwner').value.trim(), repo=$('ghRepo').value.trim(),
         branch=$('ghBranch').value.trim()||'main', path=$('ghPath').value.trim()||'works.js',
         token=$('ghToken').value.trim();
+  if (location.protocol === 'file:') {
+    alert('Publishing only works from the live site.\n\nOpen https://YOURNAME.github.io/REPO/admin.html instead of the file on your computer, then try again.');
+    return;
+  }
   if(!owner||!repo||!token){ $('ghPanel').open = true; toast('Fill in the publishing setup first'); return; }
   const btn = $('btnCommit'); btn.disabled = true; btn.textContent = 'Publishing…';
 
   const api = `https://api.github.com/repos/${owner}/${repo}/contents/${path}`;
-  /* Only headers GitHub allows cross-origin. Cache busting is done with the
-     ?t= query parameter and cache:'no-store' instead. */
-  const h = {Authorization:'Bearer '+token, Accept:'application/vnd.github+json',
-             'X-GitHub-Api-Version':'2022-11-28'};
+  /* Bare minimum headers. Anything extra can trip GitHub's cross-origin check
+     and the request never leaves the browser. */
+  const h = {Authorization:'Bearer '+token, Accept:'application/vnd.github+json'};
 
   /* Ask GitHub for the file's current fingerprint. Cache-busted, because a
      stale one is exactly what causes a 409. */
@@ -371,7 +419,17 @@ $('btnCommit').addEventListener('click', async () => {
     GH.forEach(k => localStorage.setItem('lh_'+k, $(k).value.trim()));
     stamp();
     toast('Published — live within a minute', 4000);
-  }catch(err){ alert(err.message); }
+  }catch(err){
+    if (err instanceof TypeError) {
+      alert('Could not reach GitHub at all.\n\nThe request was blocked before it left the browser. Usual causes:\n' +
+            '\u2022 an ad blocker or privacy extension blocking api.github.com\n' +
+            '\u2022 a VPN or network filter\n' +
+            '\u2022 no connection\n\n' +
+            'Try the Test connection button in Publishing setup, or an incognito window with extensions off.');
+    } else {
+      alert(err.message);
+    }
+  }
   finally{ btn.disabled = false; btn.textContent = 'Publish'; }
 });
 
