@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Studio — Lauryn Haines</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght,SOFT,WONK@9..144,400..600,50,1&family=Instrument+Sans:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--sun:#FCC02C;--clay:#DF7247;--cobalt:#0153B9;--peri:#8E86D4;--violet:#4A3F86;
+  --ink:#241D2C;--cream:#FFF8EE;--line:rgba(36,29,44,.18);
+  --display:"Fraunces",serif;--body:"Instrument Sans",system-ui,sans-serif;--label:"DM Mono",monospace}
+*{box-sizing:border-box}
+body{margin:0;background:#F3F0E9;color:var(--ink);font-family:var(--body);font-size:15px}
+h1,h2{font-family:var(--display);font-weight:500;margin:0;font-variation-settings:"SOFT" 50,"WONK" 1}
+.bar{position:sticky;top:0;z-index:20;background:var(--ink);color:var(--cream);
+  padding:12px 18px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.bar h1{font-size:19px;color:var(--cream)}
+.bar h1 em{font-style:italic;color:var(--sun)}
+.bar .sp{margin-left:auto}
+.wrap{max-width:1100px;margin:0 auto;padding:20px 16px 90px}
+.lab{font-family:var(--label);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:#6B6577}
+button{font-family:var(--label);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;
+  border:2px solid var(--ink);background:none;color:var(--ink);padding:8px 13px;border-radius:100px;cursor:pointer}
+button:hover{background:var(--ink);color:var(--cream)}
+button.pri{background:var(--sun);border-color:var(--sun)}
+button.pri:hover{background:var(--ink);border-color:var(--ink);color:var(--sun)}
+button.ghost{border-color:rgba(255,248,238,.5);color:var(--cream)}
+button.ghost:hover{background:var(--cream);color:var(--ink);border-color:var(--cream)}
+button.mini{padding:5px 9px;font-size:9.5px;border-width:1.5px}
+button.danger{border-color:var(--clay);color:var(--clay)}
+button.danger:hover{background:var(--clay);color:#fff}
+input,select,textarea{font-family:var(--body);font-size:15px;width:100%;padding:8px 10px;
+  border:1.5px solid var(--line);background:#fff;border-radius:0;color:var(--ink)}
+input:focus,select:focus,textarea:focus{outline:none;border-color:var(--cobalt)}
+textarea{min-height:70px;resize:vertical}
+
+.card{background:#fff;border:1.5px solid var(--line);margin-bottom:12px}
+.card .top{display:flex;gap:12px;padding:12px;align-items:flex-start}
+.thumb{width:82px;height:104px;flex:0 0 auto;background:#EEE;background-size:cover;background-position:center;
+  border:1.5px solid var(--ink)}
+.top .id{flex:1;min-width:0}
+.top .id .t{font-family:var(--display);font-size:18px;font-weight:500}
+.top .id .s{margin-top:3px}
+.chips{display:flex;gap:5px;flex-wrap:wrap;margin-top:8px}
+.chip{font-family:var(--label);font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;
+  padding:5px 10px;border-radius:100px;border:1.5px solid var(--line);cursor:pointer;background:none}
+.chip.on[data-s="available"]{background:#1B7A4B;border-color:#1B7A4B;color:#fff}
+.chip.on[data-s="reserved"]{background:var(--violet);border-color:var(--violet);color:#fff}
+.chip.on[data-s="sold"]{background:var(--clay);border-color:var(--clay);color:#fff}
+.chip.on[data-s="commissioned"]{background:var(--cobalt);border-color:var(--cobalt);color:#fff}
+.chip.shop.on{background:#3B3546;border-color:#3B3546;color:#fff}
+.tools{display:flex;gap:5px;align-items:center;flex-wrap:wrap}
+.body{display:none;padding:0 12px 14px;border-top:1.5px solid var(--line)}
+.card.open .body{display:block}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
+.grid .full{grid-column:span 2}
+@media(max-width:640px){.grid{grid-template-columns:1fr}.grid .full{grid-column:span 1}}
+.f label{display:block;margin-bottom:3px}
+.hidden-piece{opacity:.45}
+
+.panel{background:#fff;border:1.5px solid var(--line);padding:16px;margin-bottom:14px}
+.panel h2{font-size:22px;margin-bottom:4px}
+details.panel summary{cursor:pointer;font-family:var(--label);font-size:11px;letter-spacing:.14em;text-transform:uppercase}
+.note{font-size:13px;color:#5F5A6B;margin:6px 0 0}
+.warn{background:#FFF3D6;border:1.5px solid var(--sun);padding:10px 12px;font-size:13px;margin-top:10px}
+#toast{position:fixed;left:50%;bottom:18px;transform:translateX(-50%);background:var(--ink);color:var(--cream);
+  padding:11px 18px;font-family:var(--label);font-size:11px;letter-spacing:.12em;text-transform:uppercase;
+  display:none;z-index:50;max-width:90vw;text-align:center}
+
+/* tag rows */
+.tagrow{display:flex;gap:8px;align-items:center;padding:8px 0;border-bottom:1px solid var(--line)}
+.tagrow:last-of-type{border-bottom:0}
+.tagrow input{flex:1;min-width:0}
+.tagrow .cnt{font-family:var(--label);font-size:10px;letter-spacing:.1em;color:#8A8496;white-space:nowrap}
+.tagrow .eye{border-color:var(--line);color:#8A8496}
+.tagrow .eye.on{border-color:#1B7A4B;color:#1B7A4B}
+</style>
+</head>
+<body>
+
+<div class="bar">
+  <h1>Studio <em>Admin</em></h1>
+  <span class="lab" id="count" style="color:rgba(255,248,238,.6)"></span>
+  <span class="lab" id="size" style="color:rgba(255,248,238,.45)"></span>
+  <span class="sp"></span>
+  <button class="ghost" onclick="location.href='index.html'">View site</button>
+  <button class="ghost" id="btnDownload">Download works.js</button>
+  <button class="pri" id="btnCommit">Publish</button>
+</div>
+
+<div class="wrap">
+
+  <details class="panel" id="ghPanel">
+    <summary>Publishing setup — connect to GitHub (one time)</summary>
+    <p class="note">Fill this in once and "Publish" writes straight to your repo from any device, including your
+      phone. Leave it blank and use "Download works.js" instead — that works too, it just needs a computer.</p>
+    <div class="grid" style="margin-top:12px">
+      <div class="f"><label class="lab">GitHub username</label><input id="ghOwner" placeholder="jhaines0605"></div>
+      <div class="f"><label class="lab">Repository</label><input id="ghRepo" placeholder="lauryn"></div>
+      <div class="f"><label class="lab">Branch</label><input id="ghBranch" placeholder="main"></div>
+      <div class="f"><label class="lab">File path</label><input id="ghPath" placeholder="works.js"></div>
+      <div class="f full"><label class="lab">Fine-grained token (Contents: Read and write)</label>
+        <input id="ghToken" type="password" placeholder="github_pat_..."></div>
+    </div>
+    <div class="warn">The token is saved in this browser only — never in the repo, never visible on the live site.
+      If it ever leaks, the worst anyone can do is edit this one file. Revoke it in GitHub settings and make a new one.</div>
+    <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap">
+      <button id="ghSave">Save settings</button><button id="ghClear" class="danger">Forget token</button>
+    </div>
+  </details>
+
+  <details class="panel">
+    <summary>Site settings</summary>
+    <div class="grid" style="margin-top:12px">
+      <div class="f"><label class="lab">Contact email</label><input id="sEmail"></div>
+      <div class="f"><label class="lab">Formspree form ID</label><input id="sForm"></div>
+      <div class="f"><label class="lab">Instagram URL</label><input id="sIg"></div>
+      <div class="f"><label class="lab">Facebook URL</label><input id="sFb"></div>
+      <div class="f"><label class="lab">Mural starting price</label><input id="sMural"></div>
+      <div class="f"><label class="lab">Based in</label><input id="sBased"></div>
+      <div class="f full"><label class="lab">Mural price note</label><input id="sMuralNote"></div>
+      <div class="f full"><label class="lab">Home tagline</label><input id="sTag"></div>
+      <div class="f"><label class="lab">Portrait photo (home page circle)</label><input id="sPortrait" placeholder="images/portrait.jpg"></div>
+      <div class="f"><label class="lab">Accent color</label><input id="sAccent" placeholder="#4E9BE0"></div>
+      <div class="f full"><label class="lab">Shop page intro line</label><input id="sShopNote"></div>
+      <div class="f full"><label class="lab">Murals headline</label><input id="sMuralIntro"></div>
+      <div class="f full"><label class="lab">Murals paragraph</label><textarea id="sMuralBody"></textarea></div>
+      <div class="f full"><label class="lab">Newsletter form URL (from Kit — blank hides the signup)</label>
+        <input id="sNlAction" placeholder="https://app.kit.com/forms/000000/subscriptions"></div>
+      <div class="f"><label class="lab">Newsletter field name</label><input id="sNlField" placeholder="email_address"></div>
+      <div class="f"><label class="lab">Newsletter heading</label><input id="sNlHead"></div>
+      <div class="f full"><label class="lab">Newsletter blurb</label><input id="sNlBody"></div>
+      <div class="f full"><label class="lab">Contact heading</label><input id="sContactHead"></div>
+      <div class="f full"><label class="lab">Contact paragraph</label><textarea id="sContactBody"></textarea></div>
+      <div class="f full"><label class="lab">About paragraphs (one blank line between)</label><textarea id="sBody" style="min-height:130px"></textarea></div>
+      <div class="f full"><label class="lab">Shop tab</label>
+        <select id="sShop"><option value="true">Visible</option><option value="false">Hidden</option></select></div>
+    </div>
+  </details>
+
+  <div style="display:flex;gap:8px;align-items:center;margin:18px 0 12px;flex-wrap:wrap">
+    <button class="pri" id="btnAdd">+ Add a piece</button>
+    <span class="lab">Tap a card to open it</span>
+  </div>
+
+  <div id="list"></div>
+</div>
+
+<div id="toast"></div>
+
+<script src="works.js"></script>
+<script>
+const D = JSON.parse(JSON.stringify(window.WORKS || {settings:{}, pieces:[]}));
+const S = D.settings, P = D.pieces;
+if (!S.categories) S.categories = [];
+const $ = id => document.getElementById(id);
+const esc = s => String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const toast = (m,ms=2600) => { const t=$('toast'); t.textContent=m; t.style.display='block';
+  clearTimeout(t._t); t._t=setTimeout(()=>t.style.display='none',ms); };
+
+/* ---------------- settings ---------------- */
+const sMap = {sEmail:'email',sForm:'formspreeId',sIg:'instagram',sFb:'facebook',sMural:'muralStartingPrice',
+  sBased:'basedIn',sMuralNote:'muralPriceNote',sTag:'tagline',sPortrait:'portraitImage',
+  sAccent:'accent',sShopNote:'shopNote',sContactHead:'contactHead',sContactBody:'contactBody',
+  sMuralIntro:'muralIntro',sMuralBody:'muralBody',sNlAction:'newsletterAction',
+  sNlField:'newsletterField',sNlHead:'newsletterHead',sNlBody:'newsletterBody'};
+Object.entries(sMap).forEach(([el,key]) => {
+  $(el).value = S[key] || '';
+  $(el).addEventListener('input', e => S[key] = e.target.value);
+});
+$('sBody').value = [S.aboutPull, ...(S.aboutBody||[])].filter(Boolean).join('\n\n');
+$('sBody').addEventListener('input', e => { S.aboutPull=''; S.aboutBody = e.target.value.split(/\n\s*\n/).map(s=>s.trim()).filter(Boolean); });
+$('sShop').value = String(S.showShop !== false);
+$('sShop').addEventListener('change', e => S.showShop = e.target.value === 'true');
+
+/* ---------------- tags ---------------- */
+const TYPES = {canvas:'Original canvas', mural:'Mural', print:'Print'};
+const STATUSES = ['available','reserved','sold','commissioned'];
+
+
+
+
+
+/* ---------------- pieces ---------------- */
+function sizeReadout(){
+  const kb = Math.round(fileText().length / 1024);
+  const el = $('size');
+  el.textContent = kb < 1024 ? kb + ' KB' : (kb/1024).toFixed(1) + ' MB';
+  el.style.color = kb > 3500 ? '#F0A08C' : 'rgba(255,248,238,.45)';
+  el.title = kb > 3500
+    ? 'Getting large. Photos added from a device are stored inside this file. Consider putting them in the images folder instead.'
+    : '';
+}
+
+function render(){
+  $('count').textContent = P.length + ' pieces';
+  sizeReadout();
+  $('list').innerHTML = P.map((p,i) => `
+    <div class="card ${p.visible===false?'hidden-piece':''}" data-i="${i}">
+      <div class="top">
+        <div class="thumb" style="background-image:url('${esc(p.image)}')" data-toggle></div>
+        <div class="id" data-toggle>
+          <div class="t">${esc(p.title||'Untitled')} <span style="color:#8A8496">${esc(p.year||'')}</span></div>
+          <div class="lab s">${esc(TYPES[p.type]||p.type)} · ${esc(p.size||'')} ${p.price?'· '+esc(p.price):''}</div>
+          <div class="chips">
+            ${STATUSES.map(s=>`<button class="chip ${p.status===s?'on':''}" data-s="${s}" data-set="${i}">${s}</button>`).join('')}
+            <button class="chip shop ${p.inShop!==false?'on':''}" data-shop="${i}">${p.inShop!==false?'in shop':'art only'}</button>
+          </div>
+        </div>
+        <div class="tools">
+          <button class="mini" data-up="${i}" title="Move up">↑</button>
+          <button class="mini" data-down="${i}" title="Move down">↓</button>
+          <button class="mini" data-vis="${i}">${p.visible===false?'Show':'Hide'}</button>
+        </div>
+      </div>
+      <div class="body">
+        <div class="grid">
+          <div class="f"><label class="lab">Title</label><input data-k="title" data-i="${i}" value="${esc(p.title)}"></div>
+          <div class="f"><label class="lab">Year</label><input data-k="year" data-i="${i}" value="${esc(p.year)}"></div>
+          <div class="f"><label class="lab">Type</label><select data-k="type" data-i="${i}">
+            ${Object.entries(TYPES).map(([k,v])=>`<option value="${k}" ${p.type===k?'selected':''}>${v}</option>`).join('')}</select></div>
+          <div class="f"><label class="lab">Medium</label><input data-k="medium" data-i="${i}" value="${esc(p.medium)}"></div>
+          <div class="f"><label class="lab">Size / location</label><input data-k="size" data-i="${i}" value="${esc(p.size)}"></div>
+          <div class="f"><label class="lab">Price</label><input data-k="price" data-i="${i}" value="${esc(p.price)}" placeholder="$1,850"></div>
+          <div class="f"><label class="lab">Note (edition, client, etc.)</label><input data-k="note" data-i="${i}" value="${esc(p.note)}"></div>
+          <div class="f full"><label class="lab">Image path or URL</label><input data-k="image" data-i="${i}" value="${esc(p.image)}"></div>
+          <div class="f"><label class="lab">Focus point</label><input data-k="imagePosition" data-i="${i}" value="${esc(p.imagePosition||'center')}" placeholder="center"></div>
+          <div class="f"><label class="lab">Replace image from this device</label><input type="file" accept="image/*" data-file="${i}"></div>
+        </div>
+        <div style="margin-top:12px"><button class="danger mini" data-del="${i}">Delete this piece</button></div>
+      </div>
+    </div>`).join('') || '<p class="note" style="text-align:center;padding:30px 0">No pieces yet. Hit <strong>+ Add a piece</strong> above, give it a title and price, and pick a photo from this device.</p>';
+}
+
+$('list').addEventListener('click', e => {
+  const t = e.target;
+  if (t.closest('[data-toggle]')) { t.closest('.card').classList.toggle('open'); return; }
+  if (t.dataset.set !== undefined) { P[+t.dataset.set].status = t.dataset.s; render(); return; }
+  if (t.dataset.shop !== undefined) { const p = P[+t.dataset.shop]; p.inShop = p.inShop === false; render(); return; }
+  if (t.dataset.up !== undefined) { const i=+t.dataset.up; if(i>0){[P[i-1],P[i]]=[P[i],P[i-1]];render();} return; }
+  if (t.dataset.down !== undefined) { const i=+t.dataset.down; if(i<P.length-1){[P[i+1],P[i]]=[P[i],P[i+1]];render();} return; }
+  if (t.dataset.vis !== undefined) { const p=P[+t.dataset.vis]; p.visible = p.visible===false; render(); return; }
+  if (t.dataset.del !== undefined) {
+    const i=+t.dataset.del;
+    if(confirm('Delete "'+(P[i].title||'Untitled')+'"? This is undone only by not publishing.')){P.splice(i,1);render();}
+  }
+});
+
+$('list').addEventListener('input', e => {
+  const k = e.target.dataset.k, i = e.target.dataset.i;
+  if (k === undefined || i === undefined) return;
+  P[+i][k] = e.target.value;
+  const card = e.target.closest('.card'), p = P[+i];
+  if (['title','price','size','type','year'].includes(k)){
+    card.querySelector('.id .t').innerHTML = esc(p.title||'Untitled') + ' <span style="color:#8A8496">'+esc(p.year||'')+'</span>';
+    card.querySelector('.id .s').textContent = (TYPES[p.type]||p.type) + ' · ' + (p.size||'') + (p.price?' · '+p.price:'');
+  }
+  if (k === 'image') card.querySelector('.thumb').style.backgroundImage = `url('${e.target.value}')`;
+  });
+
+$('list').addEventListener('change', e => {
+  const i = e.target.dataset.file;
+  if (i === undefined || !e.target.files[0]) return;
+  const img = new Image();
+  img.onload = () => {
+    const max = 1600, sc = Math.min(1, max/Math.max(img.width, img.height));
+    const c = document.createElement('canvas');
+    c.width = Math.round(img.width*sc); c.height = Math.round(img.height*sc);
+    c.getContext('2d').drawImage(img,0,0,c.width,c.height);
+    const uri = c.toDataURL('image/jpeg', 0.82);
+    P[+i].image = uri;
+    toast('Image added (' + Math.round(uri.length/1024) + ' KB)');
+    render();
+  };
+  img.src = URL.createObjectURL(e.target.files[0]);
+});
+
+$('btnAdd').addEventListener('click', () => {
+  P.unshift({id:'p'+Date.now(), title:'Untitled', year:String(new Date().getFullYear()), type:'canvas',
+    category:'', medium:'Acrylic on canvas', size:'', price:'', status:'available',
+    image:'', imagePosition:'center', note:'', visible:true, inShop:true});
+  render();
+  $('list').firstElementChild.classList.add('open');
+  $('list').firstElementChild.scrollIntoView({behavior:'smooth', block:'center'});
+});
+
+/* ---------------- output ---------------- */
+function fileText(){
+  return '/* Lauryn Haines — site data. Edited by admin.html. */\nwindow.WORKS = ' + JSON.stringify(D, null, 2) + ';\n';
+}
+$('btnDownload').addEventListener('click', () => {
+  const b = new Blob([fileText()], {type:'text/javascript'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(b); a.download = 'works.js'; a.click();
+  toast('Downloaded — put this file in your repo');
+});
+
+/* ---------------- GitHub publish ---------------- */
+const GH = ['ghOwner','ghRepo','ghBranch','ghPath','ghToken'];
+GH.forEach(k => $(k).value = localStorage.getItem('lh_'+k) || (k==='ghBranch'?'main':k==='ghPath'?'works.js':''));
+$('ghSave').addEventListener('click', () => { GH.forEach(k => localStorage.setItem('lh_'+k, $(k).value.trim())); toast('Saved on this device'); });
+$('ghClear').addEventListener('click', () => { GH.forEach(k => { localStorage.removeItem('lh_'+k); $(k).value=''; }); toast('Cleared'); });
+
+function b64(str){
+  const bytes = new TextEncoder().encode(str);
+  let s = '';
+  for (let i = 0; i < bytes.length; i += 0x8000) s += String.fromCharCode.apply(null, bytes.subarray(i, i+0x8000));
+  return btoa(s);
+}
+
+$('btnCommit').addEventListener('click', async () => {
+  const owner=$('ghOwner').value.trim(), repo=$('ghRepo').value.trim(),
+        branch=$('ghBranch').value.trim()||'main', path=$('ghPath').value.trim()||'works.js',
+        token=$('ghToken').value.trim();
+  if(!owner||!repo||!token){ $('ghPanel').open = true; toast('Fill in the publishing setup first'); return; }
+  const btn = $('btnCommit'); btn.disabled = true; btn.textContent = 'Publishing…';
+  try{
+    const api = `https://api.github.com/repos/${owner}/${repo}/contents/${path}`;
+    const h = {Authorization:'Bearer '+token, Accept:'application/vnd.github+json'};
+    let sha;
+    const cur = await fetch(`${api}?ref=${branch}`, {headers:h});
+    if (cur.ok) sha = (await cur.json()).sha;
+    else if (cur.status !== 404) throw new Error('GitHub said ' + cur.status + ' — check the repo name and token.');
+    const put = await fetch(api, {method:'PUT', headers:{...h,'Content-Type':'application/json'},
+      body: JSON.stringify({message:'Update works.js from studio admin', content:b64(fileText()), branch, ...(sha?{sha}:{})})});
+    if(!put.ok) throw new Error('Publish failed (' + put.status + '). Token may need Contents: Read and write.');
+    GH.forEach(k => localStorage.setItem('lh_'+k, $(k).value.trim()));
+    toast('Published — live in about a minute', 4000);
+  }catch(err){ alert(err.message); }
+  finally{ btn.disabled = false; btn.textContent = 'Publish'; }
+});
+
+render();
+</script>
+</body>
+</html>

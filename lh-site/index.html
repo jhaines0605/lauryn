@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lauryn Haines</title>
+<meta name="description" content="Hi, I'm Lauryn Haines—a painter and muralist who believes that art should feel alive. I create colorful, joy-filled pieces that brighten walls, lift moods, and turn ordinary spaces into something worth noticing.">
+<meta property="og:title" content="Lauryn Haines">
+<meta property="og:description" content="Painter. Muralist. Space Changer.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Raleway:wght@200;300;400;500&display=swap" rel="stylesheet">
+<style>
+/* ================================================================
+   Matched to laurynhaines.com — white, centered, wide-tracked type,
+   outlined pill nav. Pages swap; nothing scrolls but the Art page.
+   ================================================================ */
+:root{
+  --paper:#FFFFFF;
+  --text:#4A4A4A;
+  --soft:#8E8E8E;
+  --line:#DDDDDD;
+  --accent:#4E9BE0;
+  --font:"Raleway",system-ui,-apple-system,sans-serif;
+  --pad:clamp(20px,5vw,48px);
+  --maxw:960px;
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{margin:0;background:var(--paper);color:var(--text);font-family:var(--font);
+  font-weight:300;font-size:17px;line-height:1.85;-webkit-font-smoothing:antialiased}
+img{display:block;max-width:100%}
+a{color:inherit;text-decoration:none}
+p{margin:0 0 1.4em}
+
+.shell{max-width:var(--maxw);margin:0 auto;padding:clamp(26px,5vw,44px) var(--pad) 60px}
+
+/* ---------------- nav: four outlined pills, evenly spread ---------------- */
+.nav{display:flex;flex-wrap:wrap;gap:clamp(8px,1.6vw,14px)}
+.nav a{flex:1 1 auto;min-width:88px;text-align:center;font-size:clamp(11px,1.5vw,13px);font-weight:400;
+  letter-spacing:.24em;text-transform:uppercase;color:var(--text);
+  padding:15px 6px;border:1px solid var(--line);border-radius:100px;
+  transition:border-color .25s,color .25s}
+.nav a:hover{border-color:var(--soft)}
+.nav a.on{border-color:var(--accent);color:var(--accent)}
+.rule{height:1px;background:var(--line);border:0;margin:26px 0 0}
+
+/* ---------------- pages ---------------- */
+.page{display:none;padding-top:clamp(34px,6vw,58px);text-align:center}
+.page.on{display:block;animation:fade .45s ease both}
+@keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+h1,h2{margin:0;font-weight:200;color:#3C3C3C;letter-spacing:.22em;text-transform:uppercase;line-height:1.3}
+h1{font-size:clamp(26px,6.2vw,44px)}
+h2{font-size:clamp(19px,3.6vw,26px)}
+.divider{width:66px;height:1px;background:var(--line);margin:22px auto}
+
+/* ---------------- home ---------------- */
+.portrait{width:clamp(200px,54vw,300px);height:clamp(200px,54vw,300px);margin:0 auto;
+  border-radius:50%;overflow:hidden;background:#F2F2F2}
+.portrait img{width:100%;height:100%;object-fit:cover}
+.tagline{margin-top:6px;font-size:clamp(12px,2.6vw,15px);letter-spacing:.22em;
+  text-transform:uppercase;color:var(--text)}
+.home-rule{height:1px;background:var(--line);margin:36px 0 28px}
+.social{display:flex;gap:14px;justify-content:center}
+.social a{width:44px;height:44px;border:1px solid var(--line);border-radius:50%;
+  display:grid;place-items:center;color:var(--soft);transition:.25s}
+.social a:hover{border-color:var(--accent);color:var(--accent)}
+.social svg{width:19px;height:19px;fill:currentColor}
+
+/* ---------------- about ---------------- */
+.copy{max-width:640px;margin:0 auto;color:var(--soft);font-size:clamp(16px,2.2vw,18px)}
+.copy p{color:var(--soft)}
+
+/* ================================================================
+   ART — the revamped part. Big pictures, real names, prices,
+   and a status tag on anything that isn't simply for sale.
+   ================================================================ */
+.gal{columns:2;column-gap:clamp(18px,3.4vw,40px);text-align:center}
+@media(max-width:680px){.gal{columns:1}}
+.piece{break-inside:avoid;margin-bottom:clamp(30px,5vw,58px)}
+.frame{position:relative;overflow:hidden;cursor:zoom-in;background:#F5F5F5}
+.frame img{width:100%;height:auto;transition:transform .7s cubic-bezier(.2,.7,.2,1)}
+.frame:hover img{transform:scale(1.025)}
+.tag{position:absolute;top:0;left:0;font-size:9.5px;font-weight:400;letter-spacing:.2em;
+  text-transform:uppercase;padding:7px 14px;color:#fff;background:rgba(74,74,74,.88)}
+.tag.sold{background:rgba(214,124,110,.94)}
+.tag.reserved{background:rgba(150,140,196,.94)}
+.tag.commissioned{background:rgba(126,163,140,.94)}
+.mural-lead{max-width:24ch;margin:0 auto 22px;font-size:clamp(20px,3.4vw,28px);font-weight:200;
+  letter-spacing:.04em;color:#3C3C3C;line-height:1.4}
+.mural-strip{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(12px,2vw,22px);margin:clamp(28px,4vw,44px) 0}
+@media(max-width:700px){.mural-strip{grid-template-columns:1fr}}
+.mural-strip .frame{aspect-ratio:4/3}
+.mural-strip .frame img{width:100%;height:100%;object-fit:cover}
+.steps{display:grid;grid-template-columns:repeat(4,1fr);gap:clamp(18px,3vw,32px);text-align:left;
+  margin-top:clamp(20px,3vw,32px)}
+@media(max-width:860px){.steps{grid-template-columns:1fr 1fr}}
+@media(max-width:520px){.steps{grid-template-columns:1fr}}
+.steps .s{border-top:1px solid var(--line);padding-top:14px}
+.steps .n{font-size:10px;letter-spacing:.24em;color:var(--accent)}
+.steps .t{font-size:13px;letter-spacing:.18em;text-transform:uppercase;color:#3C3C3C;margin:7px 0}
+.steps .d{font-size:14px;color:var(--soft);line-height:1.7}
+.quote{margin-top:clamp(34px,5vw,52px);padding:clamp(24px,4vw,36px);border:1px solid var(--line);border-radius:3px}
+.qline{font-size:clamp(17px,2.6vw,22px);font-weight:200;letter-spacing:.14em;text-transform:uppercase;color:#3C3C3C}
+.qline span{color:var(--accent)}
+.quote p{max-width:46ch;margin:12px auto 20px;color:var(--soft);font-size:14.5px}
+
+.signup{max-width:520px;margin:clamp(44px,6vw,70px) auto 0;padding-top:clamp(30px,4vw,44px);border-top:1px solid var(--line)}
+.signup .h{font-size:13px;letter-spacing:.2em;text-transform:uppercase;color:#3C3C3C}
+.signup p{margin:10px auto 20px;max-width:44ch;color:var(--soft);font-size:14.5px}
+.signup .row{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+.signup input{flex:1 1 240px;font-family:var(--font);font-weight:300;font-size:16px;color:var(--text);
+  background:#fff;border:1px solid var(--line);border-radius:2px;padding:12px 14px}
+.signup input:focus{outline:none;border-color:var(--accent)}
+.signup .msg{margin-top:14px;font-size:13.5px;color:var(--soft);min-height:20px}
+.shopnote{max-width:52ch;margin:0 auto clamp(26px,4vw,40px);color:var(--soft);font-size:15px}
+.shop{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(20px,3.4vw,42px);text-align:center}
+@media(max-width:860px){.shop{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:520px){.shop{grid-template-columns:1fr}}
+.card .frame{aspect-ratio:4/5}
+.card .frame img{width:100%;height:100%;object-fit:cover}
+.card.gone .frame img{opacity:.62}
+.meta{margin-top:16px}
+.meta .name{font-size:clamp(14px,2.2vw,16px);letter-spacing:.18em;text-transform:uppercase;
+  font-weight:400;color:#3C3C3C}
+.meta .year{color:var(--soft)}
+.meta .desc{font-size:13.5px;letter-spacing:.04em;color:var(--soft);margin-top:6px;line-height:1.6}
+.meta .foot{margin-top:12px;display:flex;gap:18px;align-items:center;justify-content:center;flex-wrap:wrap}
+.meta .price{font-size:15px;letter-spacing:.1em;color:var(--text)}
+.meta .price.out{color:var(--soft)}
+.ask{font-family:var(--font);font-size:10.5px;font-weight:400;letter-spacing:.2em;text-transform:uppercase;
+  color:var(--soft);background:none;border:0;border-bottom:1px solid var(--line);
+  padding:0 0 3px;cursor:pointer;transition:.25s}
+.ask:hover{color:var(--accent);border-bottom-color:var(--accent)}
+.empty{color:var(--soft);font-size:14px;letter-spacing:.1em;padding:clamp(30px,6vw,60px) 0}
+
+/* ---------------- contact ---------------- */
+.form{max-width:560px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:14px;text-align:left}
+.f{display:flex;flex-direction:column;gap:6px}
+.f.full{grid-column:span 2}
+@media(max-width:600px){.form{grid-template-columns:1fr}.f.full{grid-column:span 1}}
+.f label{font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--soft)}
+.f input,.f select,.f textarea{font-family:var(--font);font-weight:300;font-size:16px;color:var(--text);
+  background:#fff;border:1px solid var(--line);border-radius:2px;padding:12px 14px;width:100%}
+.f textarea{min-height:120px;resize:vertical}
+.f input:focus,.f select:focus,.f textarea:focus{outline:none;border-color:var(--accent)}
+.submit{grid-column:span 2;justify-self:center;margin-top:8px;font-family:var(--font);font-weight:400;
+  font-size:11.5px;letter-spacing:.24em;text-transform:uppercase;color:var(--text);
+  background:none;border:1px solid var(--line);border-radius:100px;padding:14px 40px;cursor:pointer;transition:.25s}
+.submit:hover{border-color:var(--accent);color:var(--accent)}
+@media(max-width:600px){.submit{grid-column:span 1}}
+.direct{margin-top:30px;font-size:14px;letter-spacing:.06em;color:var(--soft)}
+.direct a:hover{color:var(--accent)}
+
+/* ---------------- lightbox ---------------- */
+.lb{position:fixed;inset:0;z-index:100;background:rgba(255,255,255,.98);display:none;
+  align-items:center;justify-content:center;padding:26px;cursor:zoom-out}
+.lb.open{display:flex}
+.lb img{max-width:min(1000px,92vw);max-height:72vh;width:auto;object-fit:contain}
+.lb .cap{position:absolute;bottom:28px;left:0;right:0;text-align:center;padding:0 24px}
+.lb .cap .n{font-size:15px;letter-spacing:.18em;text-transform:uppercase;color:#3C3C3C;display:block}
+.lb .cap .d{font-size:13px;letter-spacing:.05em;color:var(--soft);margin-top:5px;display:block}
+.lb .x{position:absolute;top:16px;right:20px;background:none;border:0;color:var(--soft);
+  font-size:30px;line-height:1;cursor:pointer;font-family:var(--font);font-weight:200}
+.lb .x:hover{color:var(--text)}
+
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+</style>
+</head>
+<body>
+
+<div class="shell">
+  <nav class="nav" id="nav">
+    <a href="#home" class="on">Home</a>
+    <a href="#about">About</a>
+    <a href="#art">Art</a>
+    <a href="#murals">Murals</a>
+    <a href="#shop" id="shopTab">Shop</a>
+    <a href="#contact">Contact</a>
+  </nav>
+  <hr class="rule">
+
+  <!-- ---------------- HOME ---------------- -->
+  <section class="page on" id="home">
+    <div class="portrait"><img id="portrait" alt="Lauryn Haines"></div>
+    <h1 style="margin-top:34px">Lauryn Haines</h1>
+    <div class="divider"></div>
+    <div class="tagline" id="tagline"></div>
+    <div class="home-rule"></div>
+    <div class="social">
+      <a id="fbLink" href="#" target="_blank" rel="noopener" aria-label="Facebook">
+        <svg viewBox="0 0 24 24"><path d="M13.5 21v-8h2.7l.4-3.1h-3.1V7.9c0-.9.25-1.5 1.55-1.5h1.65V3.6c-.29-.04-1.27-.12-2.4-.12-2.38 0-4 1.45-4 4.11V9.9H7.6V13h2.7v8h3.2z"/></svg></a>
+      <a id="igLink" href="#" target="_blank" rel="noopener" aria-label="Instagram">
+        <svg viewBox="0 0 24 24"><path d="M12 7.4a4.6 4.6 0 100 9.2 4.6 4.6 0 000-9.2zm0 7.6a3 3 0 110-6 3 3 0 010 6zm5.8-7.8a1.07 1.07 0 11-2.15 0 1.07 1.07 0 012.15 0zM12 4.6c2.4 0 2.7 0 3.65.05.9.04 1.4.2 1.72.32.43.17.74.37 1.06.7.33.32.53.63.7 1.06.13.33.28.82.32 1.72.05.95.05 1.24.05 3.65s0 2.7-.05 3.65c-.04.9-.2 1.4-.32 1.72a2.85 2.85 0 01-.7 1.06c-.32.33-.63.53-1.06.7-.33.13-.82.28-1.72.32-.95.05-1.24.05-3.65.05s-2.7 0-3.65-.05c-.9-.04-1.4-.2-1.72-.32a2.85 2.85 0 01-1.06-.7 2.85 2.85 0 01-.7-1.06c-.13-.33-.28-.82-.32-1.72C4.6 14.7 4.6 14.4 4.6 12s0-2.7.05-3.65c.04-.9.2-1.4.32-1.72.17-.43.37-.74.7-1.06.32-.33.63-.53 1.06-.7.33-.13.82-.28 1.72-.32C9.3 4.6 9.6 4.6 12 4.6M12 3c-2.44 0-2.75.01-3.71.06-.96.04-1.61.2-2.18.42-.6.23-1.1.54-1.6 1.04-.5.5-.81 1-1.04 1.6-.22.57-.38 1.22-.42 2.18C3.01 9.25 3 9.56 3 12s.01 2.75.06 3.71c.04.96.2 1.61.42 2.18.23.6.54 1.1 1.04 1.6.5.5 1 .81 1.6 1.04.57.22 1.22.38 2.18.42.96.05 1.27.06 3.71.06s2.75-.01 3.71-.06c.96-.04 1.61-.2 2.18-.42.6-.23 1.1-.54 1.6-1.04.5-.5.81-1 1.04-1.6.22-.57.38-1.22.42-2.18.05-.96.06-1.27.06-3.71s-.01-2.75-.06-3.71c-.04-.96-.2-1.61-.42-2.18a4.4 4.4 0 00-1.04-1.6 4.4 4.4 0 00-1.6-1.04c-.57-.22-1.22-.38-2.18-.42C14.75 3.01 14.44 3 12 3z"/></svg></a>
+    </div>
+  </section>
+
+  <!-- ---------------- ABOUT ---------------- -->
+  <section class="page" id="about">
+    <h2>About</h2>
+    <div class="divider"></div>
+    <div class="copy"><span id="aboutPull" style="color:var(--soft)"></span><span id="aboutBody"></span></div>
+  </section>
+
+  <!-- ---------------- ART ---------------- -->
+  <section class="page" id="art">
+    <h2>Art</h2>
+    <div class="divider"></div>
+    <div class="gal" id="gal"></div>
+  </section>
+
+  <!-- ---------------- MURALS ---------------- -->
+  <section class="page" id="murals">
+    <h2>Murals</h2>
+    <div class="divider"></div>
+    <p class="mural-lead" id="muralIntro"></p>
+    <div class="copy" id="muralBody"></div>
+    <div class="mural-strip" id="muralStrip"></div>
+    <div class="steps" id="muralSteps"></div>
+    <div class="quote">
+      <div class="qline">Commissions begin at <span id="muralPrice2"></span></div>
+      <p id="muralNote2"></p>
+      <a class="submit" href="#contact" style="display:inline-block;text-decoration:none">Request a quote</a>
+    </div>
+  </section>
+
+  <!-- ---------------- SHOP ---------------- -->
+  <section class="page" id="shop">
+    <h2>Shop</h2>
+    <div class="divider"></div>
+    <p class="shopnote" id="shopNote">Originals and prints currently available. Everything is one-of-a-kind unless noted.</p>
+    <div class="shop" id="shopGrid"></div>
+
+    <div class="signup" id="signup" style="display:none">
+      <div class="h" id="nlHead"></div>
+      <p id="nlBody"></p>
+      <form class="row" id="nlForm">
+        <input type="email" id="nlEmail" placeholder="you@email.com" required aria-label="Email address">
+        <button class="submit" type="submit" style="margin-top:0">Join</button>
+      </form>
+      <div class="msg" id="nlMsg" role="status"></div>
+    </div>
+  </section>
+
+  <!-- ---------------- CONTACT ---------------- -->
+  <section class="page" id="contact">
+    <h2>Contact</h2>
+    <div class="divider"></div>
+    <div class="copy" style="margin-bottom:34px">
+      <p id="contactHead"></p><p id="contactBody"></p>
+    </div>
+    <form class="form" id="form" method="POST">
+      <div class="f"><label for="n">Name</label><input id="n" name="name" required></div>
+      <div class="f"><label for="e">Email</label><input id="e" name="email" type="email" required></div>
+      <div class="f"><label for="ty">What can I help with</label>
+        <select id="ty" name="type">
+          <option>A mural</option><option>An original piece</option>
+          <option>A custom commission</option><option>A print</option><option>Something else</option>
+        </select></div>
+      <div class="f"><label for="b">Budget</label>
+        <select id="b" name="budget">
+          <option>Not sure yet</option><option>Under $1,000</option><option>$1,000 – $3,500</option>
+          <option>$3,500 – $10,000</option><option>$10,000 – $25,000</option><option>$25,000+</option>
+        </select></div>
+      <div class="f full"><label for="m">Tell me about it</label>
+        <textarea id="m" name="message" placeholder="The space, the wall, the piece you have your eye on — whatever you've got."></textarea></div>
+      <button class="submit" type="submit">Submit</button>
+    </form>
+    <div class="direct">or email <a id="mailLink" href="#"></a></div>
+  </section>
+</div>
+
+<div class="lb" id="lb" role="dialog" aria-modal="true" aria-label="Artwork viewer">
+  <button class="x" id="lbx" aria-label="Close">×</button>
+  <img id="lbi" alt="">
+  <div class="cap"><span class="n" id="lbn"></span><span class="d" id="lbd"></span>
+    <div><button class="ask" id="lba" style="margin-top:12px">Ask about this piece</button></div></div>
+</div>
+
+<script src="works.js"></script>
+<script>
+const D = window.WORKS || {settings:{}, pieces:[]};
+const S = D.settings || {};
+const pieces = (D.pieces || []).filter(p => p.visible !== false);
+const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c =>
+  ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
+if (S.accent) document.documentElement.style.setProperty('--accent', S.accent);
+
+/* ---------- copy ---------- */
+document.getElementById('portrait').src = S.portraitImage || '';
+document.getElementById('tagline').textContent = S.tagline || '';
+document.getElementById('aboutPull').textContent = '';
+document.getElementById('aboutBody').innerHTML =
+  ((S.aboutPull ? [S.aboutPull + ' ' + (S.aboutBody||[])[0]] : []).concat((S.aboutBody||[]).slice(S.aboutPull ? 1 : 0)))
+  .map(t => `<p>${esc(t)}</p>`).join('');
+document.getElementById('contactHead').textContent = S.contactHead || '';
+document.getElementById('contactBody').textContent = S.contactBody || '';
+const mail = document.getElementById('mailLink');
+mail.href = 'mailto:' + (S.email||''); mail.textContent = S.email || '';
+document.getElementById('igLink').href = S.instagram || '#';
+document.getElementById('fbLink').href = S.facebook || '#';
+document.getElementById('form').action = 'https://formspree.io/f/' + (S.formspreeId||'');
+
+/* ---------- the art ---------- */
+const TAGS = {sold:'Sold', reserved:'Reserved', commissioned:'Commissioned'};
+const desc = p => [p.medium, p.size].filter(Boolean).join(', ');
+
+/* ART — pictures only. No names, no prices, nothing to read. */
+document.getElementById('gal').innerHTML = pieces.length ? pieces.map(p => `
+  <figure class="piece" data-cat="${esc(p.category)}">
+    <div class="frame" data-full="${esc(p.image)}" data-n="${esc(p.title)}" data-d="${esc(desc(p))}">
+      <img src="${esc(p.image)}" alt="${esc(p.title)}" loading="lazy">
+    </div>
+  </figure>`).join('') : '<p class="empty">New work coming soon.</p>';
+
+/* SHOP — what's for sale, with prices and sold marks. */
+const forSale = pieces.filter(p => p.inShop !== false && p.status !== 'commissioned');
+document.getElementById('shopGrid').innerHTML = forSale.length ? forSale.map(p => {
+  const gone = p.status === 'sold' || p.status === 'reserved';
+  const tag = TAGS[p.status] ? `<span class="tag ${p.status}">${TAGS[p.status]}</span>` : '';
+  const price = p.status === 'sold' ? '<span class="price out">Sold</span>'
+    : p.status === 'reserved' ? '<span class="price out">Reserved</span>'
+    : (p.price ? `<span class="price">${esc(p.price)}</span>` : '<span class="price out">Inquire for price</span>');
+  const ask = p.status === 'sold' ? 'Commission something like it' : 'Inquire';
+  return `
+  <figure class="card ${gone?'gone':''}">
+    <div class="frame" data-full="${esc(p.image)}" data-n="${esc(p.title)}" data-d="${esc(desc(p))}">
+      ${tag}<img src="${esc(p.image)}" alt="${esc(p.title)}" loading="lazy">
+    </div>
+    <figcaption class="meta">
+      <div class="name">${esc(p.title||'Untitled')}${p.year?` <span class="year">${esc(p.year)}</span>`:''}</div>
+      <div class="desc">${esc(desc(p))}${p.note ? ' · ' + esc(p.note) : ''}</div>
+      <div class="foot">${price}<button class="ask" data-piece="${esc(p.title)}${p.year?', '+esc(p.year):''}">${ask}</button></div>
+    </figcaption>
+  </figure>`;
+}).join('') : '<p class="empty">Nothing available right now — check back soon.</p>';
+
+/* MURALS */
+document.getElementById('muralIntro').textContent = S.muralIntro || '';
+document.getElementById('muralBody').innerHTML = S.muralBody ? `<p>${esc(S.muralBody)}</p>` : '';
+document.getElementById('muralPrice2').textContent = S.muralStartingPrice || '';
+document.getElementById('muralNote2').textContent = S.muralPriceNote || '';
+document.getElementById('muralSteps').innerHTML = (S.muralSteps||[]).map(s => `
+  <div class="s"><div class="n">${esc(s.n)}</div><div class="t">${esc(s.t)}</div><div class="d">${esc(s.d)}</div></div>`).join('');
+const murals = pieces.filter(p => p.type === 'mural').slice(0,3);
+if (!murals.length) document.getElementById('muralStrip').style.display = 'none';
+document.getElementById('muralStrip').innerHTML = murals.map(p => `
+  <div class="frame" data-full="${esc(p.image)}" data-n="${esc(p.title)}" data-d="${esc(desc(p))}">
+    <img src="${esc(p.image)}" alt="${esc(p.title)}" loading="lazy"></div>`).join('');
+
+/* NEWSLETTER — posts straight to Kit (or any provider's form URL). */
+if (S.newsletterAction) {
+  const box = document.getElementById('signup');
+  box.style.display = '';
+  document.getElementById('nlHead').textContent = S.newsletterHead || 'First look at new work';
+  document.getElementById('nlBody').textContent = S.newsletterBody || '';
+  const form = document.getElementById('nlForm'), msg = document.getElementById('nlMsg');
+  form.addEventListener('submit', async e => {
+    e.preventDefault();
+    const email = document.getElementById('nlEmail').value.trim();
+    if (!email) return;
+    const btn = form.querySelector('button');
+    btn.disabled = true; msg.textContent = 'One moment…';
+    try {
+      const fd = new FormData();
+      fd.append(S.newsletterField || 'email_address', email);
+      const r = await fetch(S.newsletterAction, {method:'POST', body:fd, headers:{Accept:'application/json'}});
+      if (!r.ok) throw new Error();
+      msg.textContent = 'You\u2019re on the list — thank you.';
+      form.reset();
+    } catch (err) {
+      msg.textContent = 'That didn\u2019t go through. Email ' + (S.email||'us') + ' and we\u2019ll add you.';
+    } finally { btn.disabled = false; }
+  });
+}
+
+if (S.showShop === false) document.getElementById('shopTab').style.display = 'none';
+if (S.shopNote) document.getElementById('shopNote').textContent = S.shopNote;
+
+/* ---------- page swap ---------- */
+const pages = [...document.querySelectorAll('.page')], links = [...document.querySelectorAll('#nav a')];
+function go(id){
+  if(!document.getElementById(id) || !document.getElementById(id).classList.contains('page')) id = 'home';
+  pages.forEach(p => p.classList.toggle('on', p.id === id));
+  links.forEach(a => a.classList.toggle('on', a.getAttribute('href') === '#' + id));
+  scrollTo(0,0);
+  document.title = id === 'home' ? 'Lauryn Haines' : 'Lauryn Haines — ' + id[0].toUpperCase() + id.slice(1);
+}
+addEventListener('hashchange', () => go(location.hash.slice(1)));
+go(location.hash.slice(1) || 'home');
+
+/* ---------- inquire ---------- */
+function inquire(name){
+  document.getElementById('m').value = "I'm interested in: " + name + "\n\n";
+  location.hash = '#contact';
+  setTimeout(() => document.getElementById('m').focus(), 450);
+}
+document.querySelectorAll('.ask[data-piece]').forEach(b =>
+  b.addEventListener('click', () => inquire(b.dataset.piece)));
+
+/* ---------- lightbox ---------- */
+const lb = document.getElementById('lb'), lbi = document.getElementById('lbi'),
+      lbn = document.getElementById('lbn'), lbd = document.getElementById('lbd');
+let currentName = '';
+document.querySelectorAll('.frame').forEach(f => f.addEventListener('click', () => {
+  lbi.src = f.dataset.full; lbi.alt = f.dataset.n;
+  lbn.textContent = f.dataset.n; lbd.textContent = f.dataset.d;
+  currentName = f.dataset.n;
+  lb.classList.add('open'); document.body.style.overflow = 'hidden';
+}));
+function closeLb(){ lb.classList.remove('open'); document.body.style.overflow = ''; }
+lb.addEventListener('click', e => { if(e.target === lb || e.target.id === 'lbx') closeLb(); });
+document.getElementById('lba').addEventListener('click', () => { closeLb(); inquire(currentName); });
+addEventListener('keydown', e => { if(e.key === 'Escape') closeLb(); });
+</script>
+</body>
+</html>
