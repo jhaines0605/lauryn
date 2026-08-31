@@ -68,11 +68,11 @@ window.WORKS = {
         "d": "Professional photos you're free to use, a care sheet, and touch-ups included for the first year."
       }
     ],
-    "newsletterAction": "",
+    "newsletterAction": "https://app.kit.com/forms/9864063/subscriptions",
     "newsletterField": "email_address",
     "newsletterHead": "First look at new work",
     "newsletterBody": "New paintings go out to this list before they go anywhere else. No spam, just the work.",
-    "updated": "2026-08-31T04:21:14.027Z"
+    "updated": "2026-08-31T04:33:48.046Z"
   },
   "pieces": []
 };
