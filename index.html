@@ -351,29 +351,42 @@ document.getElementById('muralStrip').innerHTML = murals.map(p => `
   <div class="frame" data-full="${esc(p.image)}" data-n="${esc(p.title)}" data-d="${esc(desc(p))}">
     <img src="${esc(p.image)}" alt="${esc(p.title)}" loading="lazy"></div>`).join('');
 
-/* NEWSLETTER — posts straight to Kit (or any provider's form URL). */
+/* NEWSLETTER — submits through a hidden iframe so it works with any provider,
+   including ones that block background posts from another domain. */
 if (S.newsletterAction) {
   const box = document.getElementById('signup');
   box.style.display = '';
   document.getElementById('nlHead').textContent = S.newsletterHead || 'First look at new work';
   document.getElementById('nlBody').textContent = S.newsletterBody || '';
-  const form = document.getElementById('nlForm'), msg = document.getElementById('nlMsg');
-  form.addEventListener('submit', async e => {
-    e.preventDefault();
-    const email = document.getElementById('nlEmail').value.trim();
-    if (!email) return;
-    const btn = form.querySelector('button');
-    btn.disabled = true; msg.textContent = 'One moment…';
-    try {
-      const fd = new FormData();
-      fd.append(S.newsletterField || 'email_address', email);
-      const r = await fetch(S.newsletterAction, {method:'POST', body:fd, headers:{Accept:'application/json'}});
-      if (!r.ok) throw new Error();
-      msg.textContent = 'You\u2019re on the list — thank you.';
-      form.reset();
-    } catch (err) {
-      msg.textContent = 'That didn\u2019t go through. Email ' + (S.email||'us') + ' and we\u2019ll add you.';
-    } finally { btn.disabled = false; }
+
+  const form = document.getElementById('nlForm'),
+        msg  = document.getElementById('nlMsg'),
+        input= document.getElementById('nlEmail');
+
+  const frame = document.createElement('iframe');
+  frame.name = 'nlSink'; frame.style.display = 'none';
+  document.body.appendChild(frame);
+
+  form.setAttribute('action', S.newsletterAction);
+  form.setAttribute('method', 'POST');
+  form.setAttribute('target', 'nlSink');
+  input.setAttribute('name', S.newsletterField || 'email_address');
+
+  let sending = false;
+  form.addEventListener('submit', () => {
+    if (!input.value.trim()) return;
+    sending = true;
+    msg.textContent = 'One moment\u2026';
+    form.querySelector('button').disabled = true;
+  });
+
+  /* The iframe loads once the provider has taken the address. */
+  frame.addEventListener('load', () => {
+    if (!sending) return;
+    sending = false;
+    msg.textContent = 'You\u2019re on the list \u2014 thank you.';
+    form.reset();
+    form.querySelector('button').disabled = false;
   });
 }
 
