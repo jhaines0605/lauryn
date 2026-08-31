@@ -52,6 +52,7 @@ textarea{min-height:70px;resize:vertical}
 .chip.on[data-s="sold"]{background:var(--clay);border-color:var(--clay);color:#fff}
 .chip.on[data-s="commissioned"]{background:var(--cobalt);border-color:var(--cobalt);color:#fff}
 .chip.shop.on{background:#3B3546;border-color:#3B3546;color:#fff}
+.chip.shape.on{background:var(--peri);border-color:var(--peri);color:#fff}
 .tools{display:flex;gap:5px;align-items:center;flex-wrap:wrap}
 .body{display:none;padding:0 12px 14px;border-top:1.5px solid var(--line)}
 .card.open .body{display:block}
@@ -202,6 +203,7 @@ function sizeReadout(){
 }
 
 function render(){
+  const wasOpen = new Set([...document.querySelectorAll('.card.open')].map(c => c.dataset.i));
   $('count').textContent = P.length + ' pieces';
   sizeReadout();
   $('list').innerHTML = P.map((p,i) => `
@@ -214,6 +216,7 @@ function render(){
           <div class="chips">
             ${STATUSES.map(s=>`<button class="chip ${p.status===s?'on':''}" data-s="${s}" data-set="${i}">${s}</button>`).join('')}
             <button class="chip shop ${p.inShop!==false?'on':''}" data-shop="${i}">${p.inShop!==false?'in shop':'art only'}</button>
+            <button class="chip shape ${p.shape==='circle'?'on':''}" data-shape="${i}">${p.shape==='circle'?'round canvas':'rectangular'}</button>
           </div>
         </div>
         <div class="tools">
@@ -239,13 +242,19 @@ function render(){
         <div style="margin-top:12px"><button class="danger mini" data-del="${i}">Delete this piece</button></div>
       </div>
     </div>`).join('') || '<p class="note" style="text-align:center;padding:30px 0">No pieces yet. Hit <strong>+ Add a piece</strong> above, give it a title and price, and pick a photo from this device.</p>';
+  reopen(wasOpen);
 }
+
+function reopen(set){ document.querySelectorAll('.card').forEach(c => { if (set.has(c.dataset.i)) c.classList.add('open'); }); }
 
 $('list').addEventListener('click', e => {
   const t = e.target;
-  if (t.closest('[data-toggle]')) { t.closest('.card').classList.toggle('open'); return; }
+  /* Buttons first. They sit inside the click-to-open area, so checking the
+     toggle before them would swallow every chip press. */
   if (t.dataset.set !== undefined) { P[+t.dataset.set].status = t.dataset.s; render(); return; }
   if (t.dataset.shop !== undefined) { const p = P[+t.dataset.shop]; p.inShop = p.inShop === false; render(); return; }
+  if (t.dataset.shape !== undefined) { const p = P[+t.dataset.shape]; p.shape = p.shape === 'circle' ? 'rectangle' : 'circle'; render(); return; }
+  if (t.closest('[data-toggle]')) { t.closest('.card').classList.toggle('open'); return; }
   if (t.dataset.up !== undefined) { const i=+t.dataset.up; if(i>0){[P[i-1],P[i]]=[P[i],P[i-1]];render();} return; }
   if (t.dataset.down !== undefined) { const i=+t.dataset.down; if(i<P.length-1){[P[i+1],P[i]]=[P[i],P[i+1]];render();} return; }
   if (t.dataset.vis !== undefined) { const p=P[+t.dataset.vis]; p.visible = p.visible===false; render(); return; }
@@ -287,7 +296,7 @@ $('list').addEventListener('change', e => {
 $('btnAdd').addEventListener('click', () => {
   P.unshift({id:'p'+Date.now(), title:'Untitled', year:String(new Date().getFullYear()), type:'canvas',
     category:'', medium:'Acrylic on canvas', size:'', price:'', status:'available',
-    image:'', imagePosition:'center', note:'', visible:true, inShop:true});
+    image:'', imagePosition:'center', note:'', visible:true, inShop:true, shape:'rectangle'});
   render();
   $('list').firstElementChild.classList.add('open');
   $('list').firstElementChild.scrollIntoView({behavior:'smooth', block:'center'});

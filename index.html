@@ -120,6 +120,15 @@ h2{font-size:clamp(19px,3.6vw,26px)}
 @media(max-width:520px){.shop{grid-template-columns:1fr}}
 .card .frame{aspect-ratio:4/5}
 .card .frame img{width:100%;height:100%;object-fit:cover}
+
+/* Round canvases: square box, whole painting visible, clipped to a circle.
+   Clipping also removes any black or white corners left by a crop. */
+.frame.circle{background:transparent}
+.frame.circle img{border-radius:50%;aspect-ratio:1/1;object-fit:cover}
+.card .frame.circle{aspect-ratio:1/1;background:transparent}
+.card .frame.circle img{border-radius:50%}
+.frame.circle .tag{left:50%;top:auto;bottom:-2px;transform:translateX(-50%);border-radius:100px}
+.lb img.circle{border-radius:50%}
 .card.gone .frame img{opacity:.62}
 .meta{margin-top:16px}
 .meta .name{font-size:clamp(14px,2.2vw,16px);letter-spacing:.18em;text-transform:uppercase;
@@ -311,7 +320,8 @@ const desc = p => [p.medium, p.size].filter(Boolean).join(', ');
 /* ART — pictures only. No names, no prices, nothing to read. */
 document.getElementById('gal').innerHTML = pieces.length ? pieces.map(p => `
   <figure class="piece" data-cat="${esc(p.category)}">
-    <div class="frame" data-full="${esc(p.image)}" data-n="${esc(p.title)}" data-d="${esc(desc(p))}">
+    <div class="frame ${p.shape==='circle'?'circle':''}" data-full="${esc(p.image)}" data-n="${esc(p.title)}"
+         data-d="${esc(desc(p))}" data-shape="${esc(p.shape||'rectangle')}">
       <img src="${esc(p.image)}" alt="${esc(p.title)}" loading="lazy">
     </div>
   </figure>`).join('') : '<p class="empty">New work coming soon.</p>';
@@ -327,7 +337,8 @@ document.getElementById('shopGrid').innerHTML = forSale.length ? forSale.map(p =
   const ask = p.status === 'sold' ? 'Commission something like it' : 'Inquire';
   return `
   <figure class="card ${gone?'gone':''}">
-    <div class="frame" data-full="${esc(p.image)}" data-n="${esc(p.title)}" data-d="${esc(desc(p))}">
+    <div class="frame ${p.shape==='circle'?'circle':''}" data-full="${esc(p.image)}" data-n="${esc(p.title)}"
+         data-d="${esc(desc(p))}" data-shape="${esc(p.shape||'rectangle')}">
       ${tag}<img src="${esc(p.image)}" alt="${esc(p.title)}" loading="lazy">
     </div>
     <figcaption class="meta">
@@ -348,7 +359,8 @@ document.getElementById('muralSteps').innerHTML = (S.muralSteps||[]).map(s => `
 const murals = pieces.filter(p => p.type === 'mural').slice(0,3);
 if (!murals.length) document.getElementById('muralStrip').style.display = 'none';
 document.getElementById('muralStrip').innerHTML = murals.map(p => `
-  <div class="frame" data-full="${esc(p.image)}" data-n="${esc(p.title)}" data-d="${esc(desc(p))}">
+  <div class="frame ${p.shape==='circle'?'circle':''}" data-full="${esc(p.image)}" data-n="${esc(p.title)}"
+       data-d="${esc(desc(p))}" data-shape="${esc(p.shape||'rectangle')}">
     <img src="${esc(p.image)}" alt="${esc(p.title)}" loading="lazy"></div>`).join('');
 
 /* NEWSLETTER — submits through a hidden iframe so it works with any provider,
@@ -420,6 +432,7 @@ const lb = document.getElementById('lb'), lbi = document.getElementById('lbi'),
 let currentName = '';
 document.querySelectorAll('.frame').forEach(f => f.addEventListener('click', () => {
   lbi.src = f.dataset.full; lbi.alt = f.dataset.n;
+  lbi.classList.toggle('circle', f.dataset.shape === 'circle');
   lbn.textContent = f.dataset.n; lbd.textContent = f.dataset.d;
   currentName = f.dataset.n;
   lb.classList.add('open'); document.body.style.overflow = 'hidden';
