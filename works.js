@@ -5,7 +5,7 @@ window.WORKS = {
     "instagram": "https://instagram.com/lauryn_haines",
     "facebook": "https://www.facebook.com/lauryn.frymire",
     "formspreeId": "mkjnojrj",
-    "muralStartingPrice": "$2,500",
+    "muralStartingPrice": "$2,000",
     "muralPriceNote": "Final cost depends on wall size, surface prep, height, and access. Booking runs about a season out.",
     "tagline": "Painter. Muralist. Space Changer.",
     "showShop": true,
@@ -72,7 +72,7 @@ window.WORKS = {
     "newsletterField": "email_address",
     "newsletterHead": "First look at new work",
     "newsletterBody": "New paintings go out to this list before they go anywhere else. No spam, just the work.",
-    "updated": "2026-08-31T04:33:48.046Z"
+    "updated": "2026-08-31T21:05:32.170Z"
   },
   "pieces": []
 };
