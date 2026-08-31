@@ -280,18 +280,7 @@ h2{font-size:clamp(19px,3.6vw,26px)}
 </div>
 
 <script>
-/* Load the data with a cache key that rolls once a minute. Browsers and
-   GitHub's CDN still cache within that minute, but a publish shows up on
-   the next one instead of sitting behind a 10-minute cache. Opening the
-   page with ?fresh skips the cache entirely. */
-(function(){
-  var v = location.protocol === 'file:' ? ''
-        : (location.search.indexOf('fresh') > -1 ? '?v=' + Date.now()
-                                                 : '?v=' + Math.floor(Date.now()/60000));
-  document.write('<scr' + 'ipt src="works.js' + v + '"></scr' + 'ipt>');
-})();
-</script>
-<script>
+function boot(){
 const D = window.WORKS || {settings:{}, pieces:[]};
 const S = D.settings || {};
 const pieces = (D.pieces || []).filter(p => p.visible !== false);
@@ -426,6 +415,27 @@ function closeLb(){ lb.classList.remove('open'); document.body.style.overflow = 
 lb.addEventListener('click', e => { if(e.target === lb || e.target.id === 'lbx') closeLb(); });
 document.getElementById('lba').addEventListener('click', () => { closeLb(); inquire(currentName); });
 addEventListener('keydown', e => { if(e.key === 'Escape') closeLb(); });
+
+}
 </script>
+<script>
+/* Load the data, then start the page. The cache key rolls once a minute so a
+   publish shows up quickly; ?fresh skips the cache entirely. If the busted
+   URL fails for any reason, fall back to the plain file so the page still works. */
+(function(){
+  function add(src, onfail){
+    var s = document.createElement('script');
+    s.src = src;
+    s.onload = boot;
+    s.onerror = onfail || boot;
+    document.body.appendChild(s);
+  }
+  var v = location.protocol === 'file:' ? ''
+        : (location.search.indexOf('fresh') > -1 ? '?v=' + Date.now()
+                                                 : '?v=' + Math.floor(Date.now()/60000));
+  add('works.js' + v, function(){ add('works.js'); });
+})();
+</script>
+
 </body>
 </html>

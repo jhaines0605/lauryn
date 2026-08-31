@@ -154,18 +154,7 @@ details.panel summary{cursor:pointer;font-family:var(--label);font-size:11px;let
 <div id="toast"></div>
 
 <script>
-/* Load the data with a cache key that rolls once a minute. Browsers and
-   GitHub's CDN still cache within that minute, but a publish shows up on
-   the next one instead of sitting behind a 10-minute cache. Opening the
-   page with ?fresh skips the cache entirely. */
-(function(){
-  var v = location.protocol === 'file:' ? ''
-        : (location.search.indexOf('fresh') > -1 ? '?v=' + Date.now()
-                                                 : '?v=' + Math.floor(Date.now()/60000));
-  document.write('<scr' + 'ipt src="works.js' + v + '"></scr' + 'ipt>');
-})();
-</script>
-<script>
+function boot(){
 const D = JSON.parse(JSON.stringify(window.WORKS || {settings:{}, pieces:[]}));
 const S = D.settings, P = D.pieces;
 if (!S.categories) S.categories = [];
@@ -389,6 +378,27 @@ stamp();
 
 $('btnReload').addEventListener('click', () => location.href = location.pathname + '?fresh=' + Date.now());
 $('btnView').addEventListener('click', () => location.href = 'index.html?fresh=' + Date.now());
+
+}
 </script>
+<script>
+/* Load the data, then start the page. The cache key rolls once a minute so a
+   publish shows up quickly; ?fresh skips the cache entirely. If the busted
+   URL fails for any reason, fall back to the plain file so the page still works. */
+(function(){
+  function add(src, onfail){
+    var s = document.createElement('script');
+    s.src = src;
+    s.onload = boot;
+    s.onerror = onfail || boot;
+    document.body.appendChild(s);
+  }
+  var v = location.protocol === 'file:' ? ''
+        : (location.search.indexOf('fresh') > -1 ? '?v=' + Date.now()
+                                                 : '?v=' + Math.floor(Date.now()/60000));
+  add('works.js' + v, function(){ add('works.js'); });
+})();
+</script>
+
 </body>
 </html>
