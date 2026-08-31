@@ -85,8 +85,10 @@ details.panel summary{cursor:pointer;font-family:var(--label);font-size:11px;let
   <h1>Studio <em>Admin</em></h1>
   <span class="lab" id="count" style="color:rgba(255,248,238,.6)"></span>
   <span class="lab" id="size" style="color:rgba(255,248,238,.45)"></span>
+  <span class="lab" id="loaded" style="color:rgba(255,248,238,.45)"></span>
   <span class="sp"></span>
-  <button class="ghost" onclick="location.href='index.html'">View site</button>
+  <button class="ghost" id="btnReload" title="Reload the newest data before editing">Refresh data</button>
+  <button class="ghost" id="btnView">View site</button>
   <button class="ghost" id="btnDownload">Download works.js</button>
   <button class="pri" id="btnCommit">Publish</button>
 </div>
@@ -151,7 +153,18 @@ details.panel summary{cursor:pointer;font-family:var(--label);font-size:11px;let
 
 <div id="toast"></div>
 
-<script src="works.js"></script>
+<script>
+/* Load the data with a cache key that rolls once a minute. Browsers and
+   GitHub's CDN still cache within that minute, but a publish shows up on
+   the next one instead of sitting behind a 10-minute cache. Opening the
+   page with ?fresh skips the cache entirely. */
+(function(){
+  var v = location.protocol === 'file:' ? ''
+        : (location.search.indexOf('fresh') > -1 ? '?v=' + Date.now()
+                                                 : '?v=' + Math.floor(Date.now()/60000));
+  document.write('<scr' + 'ipt src="works.js' + v + '"></scr' + 'ipt>');
+})();
+</script>
 <script>
 const D = JSON.parse(JSON.stringify(window.WORKS || {settings:{}, pieces:[]}));
 const S = D.settings, P = D.pieces;
@@ -289,7 +302,13 @@ $('btnAdd').addEventListener('click', () => {
 
 /* ---------------- output ---------------- */
 function fileText(){
+  D.settings.updated = new Date().toISOString();
   return '/* Lauryn Haines — site data. Edited by admin.html. */\nwindow.WORKS = ' + JSON.stringify(D, null, 2) + ';\n';
+}
+
+function stamp(){
+  const u = D.settings.updated;
+  $('loaded').textContent = u ? 'loaded: ' + new Date(u).toLocaleString([], {month:'short', day:'numeric', hour:'numeric', minute:'2-digit'}) : '';
 }
 $('btnDownload').addEventListener('click', () => {
   const b = new Blob([fileText()], {type:'text/javascript'});
@@ -328,12 +347,17 @@ $('btnCommit').addEventListener('click', async () => {
       body: JSON.stringify({message:'Update works.js from studio admin', content:b64(fileText()), branch, ...(sha?{sha}:{})})});
     if(!put.ok) throw new Error('Publish failed (' + put.status + '). Token may need Contents: Read and write.');
     GH.forEach(k => localStorage.setItem('lh_'+k, $(k).value.trim()));
+    stamp();
     toast('Published — live in about a minute', 4000);
   }catch(err){ alert(err.message); }
   finally{ btn.disabled = false; btn.textContent = 'Publish'; }
 });
 
 render();
+stamp();
+
+$('btnReload').addEventListener('click', () => location.href = location.pathname + '?fresh=' + Date.now());
+$('btnView').addEventListener('click', () => location.href = 'index.html?fresh=' + Date.now());
 </script>
 </body>
 </html>

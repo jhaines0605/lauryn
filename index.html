@@ -279,7 +279,18 @@ h2{font-size:clamp(19px,3.6vw,26px)}
     <div><button class="ask" id="lba" style="margin-top:12px">Ask about this piece</button></div></div>
 </div>
 
-<script src="works.js"></script>
+<script>
+/* Load the data with a cache key that rolls once a minute. Browsers and
+   GitHub's CDN still cache within that minute, but a publish shows up on
+   the next one instead of sitting behind a 10-minute cache. Opening the
+   page with ?fresh skips the cache entirely. */
+(function(){
+  var v = location.protocol === 'file:' ? ''
+        : (location.search.indexOf('fresh') > -1 ? '?v=' + Date.now()
+                                                 : '?v=' + Math.floor(Date.now()/60000));
+  document.write('<scr' + 'ipt src="works.js' + v + '"></scr' + 'ipt>');
+})();
+</script>
 <script>
 const D = window.WORKS || {settings:{}, pieces:[]};
 const S = D.settings || {};
