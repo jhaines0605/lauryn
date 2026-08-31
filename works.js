@@ -72,7 +72,7 @@ window.WORKS = {
     "newsletterField": "email_address",
     "newsletterHead": "First look at new work",
     "newsletterBody": "New paintings go out to this list before they go anywhere else. No spam, just the work.",
-    "updated": "2026-08-31T22:39:56.620Z"
+    "updated": "2026-08-31T22:43:02.995Z"
   },
   "pieces": [
     {
