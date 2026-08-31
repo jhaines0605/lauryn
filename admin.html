@@ -327,8 +327,10 @@ $('btnCommit').addEventListener('click', async () => {
   const btn = $('btnCommit'); btn.disabled = true; btn.textContent = 'Publishing…';
 
   const api = `https://api.github.com/repos/${owner}/${repo}/contents/${path}`;
+  /* Only headers GitHub allows cross-origin. Cache busting is done with the
+     ?t= query parameter and cache:'no-store' instead. */
   const h = {Authorization:'Bearer '+token, Accept:'application/vnd.github+json',
-             'X-GitHub-Api-Version':'2022-11-28', 'Cache-Control':'no-cache'};
+             'X-GitHub-Api-Version':'2022-11-28'};
 
   /* Ask GitHub for the file's current fingerprint. Cache-busted, because a
      stale one is exactly what causes a 409. */
