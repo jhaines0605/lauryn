@@ -150,6 +150,7 @@ details.panel summary{cursor:pointer;font-family:var(--label);font-size:11px;let
 
   <div style="display:flex;gap:8px;align-items:center;margin:18px 0 12px;flex-wrap:wrap">
     <button class="pri" id="btnAdd">+ Add a piece</button>
+    <button id="btnAddMural">+ Add a mural</button>
     <span class="lab">Tap a card to open it</span>
   </div>
 
@@ -212,11 +213,14 @@ function render(){
         <div class="thumb" style="background-image:url('${esc(p.image)}')" data-toggle></div>
         <div class="id" data-toggle>
           <div class="t">${esc(p.title||'Untitled')} <span style="color:#8A8496">${esc(p.year||'')}</span></div>
-          <div class="lab s">${esc(TYPES[p.type]||p.type)} · ${esc(p.size||'')} ${p.price?'· '+esc(p.price):''}</div>
+          <div class="lab s">${p.type==='mural' ? 'Mural' + (p.size?' · '+esc(p.size):'')
+             : esc(TYPES[p.type]||p.type) + ' · ' + esc(p.size||'') + (p.price?' · '+esc(p.price):'')}</div>
           <div class="chips">
-            ${STATUSES.map(s=>`<button class="chip ${p.status===s?'on':''}" data-s="${s}" data-set="${i}">${s}</button>`).join('')}
-            <button class="chip shop ${p.inShop!==false?'on':''}" data-shop="${i}">${p.inShop!==false?'in shop':'art only'}</button>
-            <button class="chip shape ${p.shape==='circle'?'on':''}" data-shape="${i}">${p.shape==='circle'?'round canvas':'rectangular'}</button>
+            ${p.type === 'mural'
+              ? `<button class="chip on" style="background:var(--cobalt);border-color:var(--cobalt);color:#fff" disabled>mural</button>`
+              : STATUSES.filter(s=>s!=='commissioned').map(s=>`<button class="chip ${p.status===s?'on':''}" data-s="${s}" data-set="${i}">${s}</button>`).join('')
+                + `<button class="chip shop ${p.inShop!==false?'on':''}" data-shop="${i}">${p.inShop!==false?'in shop':'art only'}</button>`
+                + `<button class="chip shape ${p.shape==='circle'?'on':''}" data-shape="${i}">${p.shape==='circle'?'round canvas':'rectangular'}</button>`}
           </div>
         </div>
         <div class="tools">
@@ -226,19 +230,28 @@ function render(){
         </div>
       </div>
       <div class="body">
+        ${p.type === 'mural' ? `
+        <div class="grid">
+          <div class="f"><label class="lab">Name</label><input data-k="title" data-i="${i}" value="${esc(p.title)}"></div>
+          <div class="f"><label class="lab">Location</label><input data-k="size" data-i="${i}" value="${esc(p.size)}" placeholder="Reno, NV"></div>
+          <div class="f"><label class="lab">Year</label><input data-k="year" data-i="${i}" value="${esc(p.year)}"></div>
+          <div class="f"><label class="lab">Type</label><select data-k="type" data-i="${i}">
+            ${Object.entries(TYPES).map(([k,v])=>`<option value="${k}" ${p.type===k?'selected':''}>${v}</option>`).join('')}</select></div>
+          <div class="f full"><label class="lab">Photo from this device</label><input type="file" accept="image/*" data-file="${i}"></div>
+          <div class="f full"><label class="lab">Image path or URL</label><input data-k="image" data-i="${i}" value="${esc(p.image)}"></div>
+        </div>` : `
         <div class="grid">
           <div class="f"><label class="lab">Title</label><input data-k="title" data-i="${i}" value="${esc(p.title)}"></div>
           <div class="f"><label class="lab">Year</label><input data-k="year" data-i="${i}" value="${esc(p.year)}"></div>
           <div class="f"><label class="lab">Type</label><select data-k="type" data-i="${i}">
             ${Object.entries(TYPES).map(([k,v])=>`<option value="${k}" ${p.type===k?'selected':''}>${v}</option>`).join('')}</select></div>
           <div class="f"><label class="lab">Medium</label><input data-k="medium" data-i="${i}" value="${esc(p.medium)}"></div>
-          <div class="f"><label class="lab">Size / location</label><input data-k="size" data-i="${i}" value="${esc(p.size)}"></div>
+          <div class="f"><label class="lab">Size</label><input data-k="size" data-i="${i}" value="${esc(p.size)}" placeholder="24 × 36 in"></div>
           <div class="f"><label class="lab">Price</label><input data-k="price" data-i="${i}" value="${esc(p.price)}" placeholder="$1,850"></div>
-          <div class="f"><label class="lab">Note (edition, client, etc.)</label><input data-k="note" data-i="${i}" value="${esc(p.note)}"></div>
+          <div class="f"><label class="lab">Note (edition, etc.)</label><input data-k="note" data-i="${i}" value="${esc(p.note)}"></div>
+          <div class="f full"><label class="lab">Photo from this device</label><input type="file" accept="image/*" data-file="${i}"></div>
           <div class="f full"><label class="lab">Image path or URL</label><input data-k="image" data-i="${i}" value="${esc(p.image)}"></div>
-          <div class="f"><label class="lab">Focus point</label><input data-k="imagePosition" data-i="${i}" value="${esc(p.imagePosition||'center')}" placeholder="center"></div>
-          <div class="f"><label class="lab">Replace image from this device</label><input type="file" accept="image/*" data-file="${i}"></div>
-        </div>
+        </div>`}
         <div style="margin-top:12px"><button class="danger mini" data-del="${i}">Delete this piece</button></div>
       </div>
     </div>`).join('') || '<p class="note" style="text-align:center;padding:30px 0">No pieces yet. Hit <strong>+ Add a piece</strong> above, give it a title and price, and pick a photo from this device.</p>';
@@ -269,6 +282,12 @@ $('list').addEventListener('input', e => {
   if (k === undefined || i === undefined) return;
   P[+i][k] = e.target.value;
   const card = e.target.closest('.card'), p = P[+i];
+  if (k === 'type') {
+    if (p.type === 'mural') { p.status = 'commissioned'; p.inShop = false; }
+    else if (p.status === 'commissioned') { p.status = 'available'; }
+    render();
+    return;
+  }
   if (['title','price','size','type','year'].includes(k)){
     card.querySelector('.id .t').innerHTML = esc(p.title||'Untitled') + ' <span style="color:#8A8496">'+esc(p.year||'')+'</span>';
     card.querySelector('.id .s').textContent = (TYPES[p.type]||p.type) + ' · ' + (p.size||'') + (p.price?' · '+p.price:'');
@@ -291,6 +310,15 @@ $('list').addEventListener('change', e => {
     render();
   };
   img.src = URL.createObjectURL(e.target.files[0]);
+});
+
+$('btnAddMural').addEventListener('click', () => {
+  P.unshift({id:'m'+Date.now(), title:'Untitled mural', year:String(new Date().getFullYear()),
+    type:'mural', category:'', medium:'', size:'', price:'', status:'commissioned',
+    image:'', imagePosition:'center', note:'', visible:true, inShop:false, shape:'rectangle'});
+  render();
+  $('list').firstElementChild.classList.add('open');
+  $('list').firstElementChild.scrollIntoView({behavior:'smooth', block:'center'});
 });
 
 $('btnAdd').addEventListener('click', () => {

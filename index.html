@@ -89,10 +89,10 @@ h2{font-size:clamp(19px,3.6vw,26px)}
 .tag.commissioned{background:rgba(126,163,140,.94)}
 .mural-lead{max-width:24ch;margin:0 auto 22px;font-size:clamp(20px,3.4vw,28px);font-weight:200;
   letter-spacing:.04em;color:#3C3C3C;line-height:1.4}
-.mural-strip{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(12px,2vw,22px);margin:clamp(28px,4vw,44px) 0}
+.mural-strip{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(12px,2vw,22px);
+  margin:clamp(28px,4vw,44px) 0;align-items:start}
 @media(max-width:700px){.mural-strip{grid-template-columns:1fr}}
-.mural-strip .frame{aspect-ratio:4/3}
-.mural-strip .frame img{width:100%;height:100%;object-fit:cover}
+.mural-strip .frame img{width:100%;height:auto;display:block}
 .steps{display:grid;grid-template-columns:repeat(4,1fr);gap:clamp(18px,3vw,32px);text-align:left;
   margin-top:clamp(20px,3vw,32px)}
 @media(max-width:860px){.steps{grid-template-columns:1fr 1fr}}
@@ -115,18 +115,18 @@ h2{font-size:clamp(19px,3.6vw,26px)}
 .signup input:focus{outline:none;border-color:var(--accent)}
 .signup .msg{margin-top:14px;font-size:13.5px;color:var(--soft);min-height:20px}
 .shopnote{max-width:52ch;margin:0 auto clamp(26px,4vw,40px);color:var(--soft);font-size:15px}
-.shop{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(20px,3.4vw,42px);text-align:center}
+.shop{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(20px,3.4vw,42px);
+  text-align:center;align-items:start}
 @media(max-width:860px){.shop{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:520px){.shop{grid-template-columns:1fr}}
-.card .frame{aspect-ratio:4/5}
-.card .frame img{width:100%;height:100%;object-fit:cover}
+.card .frame img{width:100%;height:auto;display:block}
 
 /* Round canvases: square box, whole painting visible, clipped to a circle.
    Clipping also removes any black or white corners left by a crop. */
 .frame.circle{background:transparent}
-.frame.circle img{border-radius:50%;aspect-ratio:1/1;object-fit:cover}
-.card .frame.circle{aspect-ratio:1/1;background:transparent}
-.card .frame.circle img{border-radius:50%}
+.frame.circle img{border-radius:50%;aspect-ratio:1/1;object-fit:contain}
+.card .frame.circle{background:transparent}
+.card .frame.circle img{border-radius:50%;aspect-ratio:1/1;object-fit:contain}
 .frame.circle .tag{left:50%;top:auto;bottom:-2px;transform:translateX(-50%);border-radius:100px}
 .lb img.circle{border-radius:50%}
 .card.gone .frame img{opacity:.62}
@@ -315,7 +315,9 @@ document.getElementById('form').action = 'https://formspree.io/f/' + (S.formspre
 
 /* ---------- the art ---------- */
 const TAGS = {sold:'Sold', reserved:'Reserved', commissioned:'Commissioned'};
-const desc = p => [p.medium, p.size].filter(Boolean).join(', ');
+const desc = p => p.type === 'mural'
+  ? [p.size, p.year].filter(Boolean).join(' · ')
+  : [p.medium, p.size].filter(Boolean).join(', ');
 
 /* ART — pictures only. No names, no prices, nothing to read. */
 document.getElementById('gal').innerHTML = pieces.length ? pieces.map(p => `
@@ -359,9 +361,13 @@ document.getElementById('muralSteps').innerHTML = (S.muralSteps||[]).map(s => `
 const murals = pieces.filter(p => p.type === 'mural').slice(0,3);
 if (!murals.length) document.getElementById('muralStrip').style.display = 'none';
 document.getElementById('muralStrip').innerHTML = murals.map(p => `
-  <div class="frame ${p.shape==='circle'?'circle':''}" data-full="${esc(p.image)}" data-n="${esc(p.title)}"
-       data-d="${esc(desc(p))}" data-shape="${esc(p.shape||'rectangle')}">
-    <img src="${esc(p.image)}" alt="${esc(p.title)}" loading="lazy"></div>`).join('');
+  <div>
+    <div class="frame ${p.shape==='circle'?'circle':''}" data-full="${esc(p.image)}" data-n="${esc(p.title)}"
+         data-d="${esc([p.size, p.year].filter(Boolean).join(' · '))}" data-shape="${esc(p.shape||'rectangle')}">
+      <img src="${esc(p.image)}" alt="${esc(p.title)}" loading="lazy">
+    </div>
+    <div class="label" style="margin-top:9px">${[p.title, p.size, p.year].filter(Boolean).map(esc).join(' · ')}</div>
+  </div>`).join('');
 
 /* NEWSLETTER — submits through a hidden iframe so it works with any provider,
    including ones that block background posts from another domain. */
