@@ -72,12 +72,12 @@ window.WORKS = {
     "newsletterField": "email_address",
     "newsletterHead": "First look at new work",
     "newsletterBody": "New paintings go out to this list before they go anywhere else. No spam, just the work.",
-    "updated": "2026-09-01T01:37:42.328Z"
+    "updated": "2026-09-01T01:40:06.619Z"
   },
   "pieces": [
     {
       "id": "p1788215667377",
-      "title": "Bighorn",
+      "title": "Bighorn Sheep",
       "year": "2025",
       "type": "canvas",
       "category": "",
