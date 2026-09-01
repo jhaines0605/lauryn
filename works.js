@@ -72,12 +72,12 @@ window.WORKS = {
     "newsletterField": "email_address",
     "newsletterHead": "First look at new work",
     "newsletterBody": "New paintings go out to this list before they go anywhere else. No spam, just the work.",
-    "updated": "2026-09-01T01:59:48.889Z"
+    "updated": "2026-09-01T02:41:47.080Z"
   },
   "pieces": [
     {
       "id": "p1788227953538",
-      "title": "BigHorn",
+      "title": "",
       "year": "2026",
       "type": "mural",
       "category": "",
@@ -94,7 +94,7 @@ window.WORKS = {
     },
     {
       "id": "p1788227552658",
-      "title": "Bighorn on McCarran/Nichols",
+      "title": "",
       "year": "2026",
       "type": "mural",
       "category": "",
