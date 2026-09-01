@@ -72,7 +72,7 @@ window.WORKS = {
     "newsletterField": "email_address",
     "newsletterHead": "First look at new work",
     "newsletterBody": "New paintings go out to this list before they go anywhere else. No spam, just the work.",
-    "updated": "2026-09-01T03:34:22.466Z"
+    "updated": "2026-09-01T15:17:04.886Z"
   },
   "pieces": [
     {
@@ -128,7 +128,7 @@ window.WORKS = {
     },
     {
       "id": "p1788232883763",
-      "title": "Torched Ginger",
+      "title": "Torch Ginger",
       "year": "2021",
       "type": "print",
       "category": "",
