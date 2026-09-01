@@ -76,13 +76,17 @@ h2{font-size:clamp(19px,3.6vw,26px)}
    ART — the revamped part. Big pictures, real names, prices,
    and a status tag on anything that isn't simply for sale.
    ================================================================ */
-.gal{columns:2;column-gap:clamp(18px,3.4vw,40px);text-align:center}
-@media(max-width:680px){.gal{columns:1}}
-.piece{break-inside:avoid;margin-bottom:clamp(30px,5vw,58px)}
+.gal{display:grid;grid-template-columns:repeat(2,1fr);gap:clamp(26px,4vw,54px);
+  text-align:center;align-items:start}
+@media(max-width:680px){.gal{grid-template-columns:1fr}}
+.piece{margin:0}
+/* uniform box so rows line up, image sits inside it whole */
+.piece .frame{aspect-ratio:1/1;display:grid;place-items:center;background:transparent}
+.piece .frame img{max-width:100%;max-height:100%;width:auto;height:auto}
 .frame{position:relative;overflow:hidden;cursor:zoom-in;background:#F5F5F5}
 .frame img{width:100%;height:auto;transition:transform .7s cubic-bezier(.2,.7,.2,1)}
 .frame:hover img{transform:scale(1.025)}
-.tag{position:absolute;top:0;left:0;font-size:9.5px;font-weight:400;letter-spacing:.2em;
+.tag{position:absolute;top:0;left:0;z-index:2;font-size:9.5px;font-weight:400;letter-spacing:.2em;
   text-transform:uppercase;padding:7px 14px;color:#fff;background:rgba(74,74,74,.88)}
 .tag.sold{background:rgba(214,124,110,.94)}
 .tag.reserved{background:rgba(150,140,196,.94)}
@@ -115,21 +119,26 @@ h2{font-size:clamp(19px,3.6vw,26px)}
 .signup input:focus{outline:none;border-color:var(--accent)}
 .signup .msg{margin-top:14px;font-size:13.5px;color:var(--soft);min-height:20px}
 .shopnote{max-width:52ch;margin:0 auto clamp(26px,4vw,40px);color:var(--soft);font-size:15px}
-.shop{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(20px,3.4vw,42px);
+.shop{display:grid;grid-template-columns:repeat(4,1fr);gap:clamp(16px,2.4vw,30px);
   text-align:center;align-items:start}
-@media(max-width:860px){.shop{grid-template-columns:repeat(2,1fr)}}
-@media(max-width:520px){.shop{grid-template-columns:1fr}}
+@media(max-width:900px){.shop{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:560px){.shop{grid-template-columns:repeat(2,1fr)}}
+.card .frame{aspect-ratio:1/1;display:grid;place-items:center;background:transparent}
+.card .frame img{max-width:100%;max-height:100%;width:auto;height:auto}
+.card .meta{margin-top:11px}
+.card .name{font-size:11.5px;letter-spacing:.14em}
+.card .desc{font-size:11.5px;margin-top:4px}
+.card .foot{margin-top:8px;gap:10px}
+.card .price{font-size:13px}
+.card .ask{font-size:9.5px;letter-spacing:.16em}
 .card .frame img{width:100%;height:auto;display:block}
 
 /* Round canvases: square box, whole painting visible, clipped to a circle.
    Clipping also removes any black or white corners left by a crop. */
 .frame.circle{background:transparent}
-.frame.circle img{border-radius:50%;aspect-ratio:1/1;object-fit:contain}
-.card .frame.circle{background:transparent}
-.card .frame.circle img{border-radius:50%;aspect-ratio:1/1;object-fit:contain}
+.frame.circle img{border-radius:50%}
 .frame.circle .tag{left:50%;top:auto;bottom:-2px;transform:translateX(-50%);border-radius:100px}
 .lb img.circle{border-radius:50%}
-.card.gone .frame img{opacity:.62}
 .meta{margin-top:16px}
 .meta .name{font-size:clamp(14px,2.2vw,16px);letter-spacing:.18em;text-transform:uppercase;
   font-weight:400;color:#3C3C3C}
@@ -163,16 +172,20 @@ h2{font-size:clamp(19px,3.6vw,26px)}
 .direct a:hover{color:var(--accent)}
 
 /* ---------------- lightbox ---------------- */
-.lb{position:fixed;inset:0;z-index:100;background:rgba(255,255,255,.98);display:none;
-  align-items:center;justify-content:center;padding:26px;cursor:zoom-out}
-.lb.open{display:flex}
-.lb img{max-width:min(1000px,92vw);max-height:72vh;width:auto;object-fit:contain}
+.lb{position:fixed;inset:0;z-index:100;background:rgba(58,53,64,.82);backdrop-filter:blur(6px);
+  display:none;align-items:center;justify-content:center;padding:26px;cursor:zoom-out}
+.lb.open{display:flex;animation:lbin .25s ease both}
+@keyframes lbin{from{opacity:0}to{opacity:1}}
+.lb img{max-width:min(1000px,92vw);max-height:72vh;width:auto;object-fit:contain;
+  box-shadow:0 18px 60px rgba(0,0,0,.45)}
 .lb .cap{position:absolute;bottom:28px;left:0;right:0;text-align:center;padding:0 24px}
-.lb .cap .n{font-size:15px;letter-spacing:.18em;text-transform:uppercase;color:#3C3C3C;display:block}
-.lb .cap .d{font-size:13px;letter-spacing:.05em;color:var(--soft);margin-top:5px;display:block}
-.lb .x{position:absolute;top:16px;right:20px;background:none;border:0;color:var(--soft);
+.lb .cap .n{font-size:15px;letter-spacing:.18em;text-transform:uppercase;color:#fff;display:block}
+.lb .cap .d{font-size:13px;letter-spacing:.05em;color:rgba(255,255,255,.72);margin-top:5px;display:block}
+.lb .cap .ask{color:rgba(255,255,255,.85);border-bottom-color:rgba(255,255,255,.55)}
+.lb .cap .ask:hover{color:#fff;border-bottom-color:#fff}
+.lb .x{position:absolute;top:16px;right:20px;background:none;border:0;color:rgba(255,255,255,.8);
   font-size:30px;line-height:1;cursor:pointer;font-family:var(--font);font-weight:200}
-.lb .x:hover{color:var(--text)}
+.lb .x:hover{color:#fff}
 
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 :focus-visible{outline:2px solid var(--accent);outline-offset:3px}
@@ -326,19 +339,21 @@ document.getElementById('gal').innerHTML = pieces.length ? pieces.map(p => `
          data-d="${esc(desc(p))}" data-shape="${esc(p.shape||'rectangle')}">
       <img src="${esc(p.image)}" alt="${esc(p.title)}" loading="lazy">
     </div>
+    <figcaption class="meta">
+      <div class="name">${esc(p.title||'Untitled')}${p.year?` <span class="year">${esc(p.year)}</span>`:''}</div>
+    </figcaption>
   </figure>`).join('') : '<p class="empty">New work coming soon.</p>';
 
 /* SHOP — what's for sale, with prices and sold marks. */
 const forSale = pieces.filter(p => p.inShop !== false && p.status !== 'commissioned');
 document.getElementById('shopGrid').innerHTML = forSale.length ? forSale.map(p => {
-  const gone = p.status === 'sold' || p.status === 'reserved';
   const tag = TAGS[p.status] ? `<span class="tag ${p.status}">${TAGS[p.status]}</span>` : '';
   const price = p.status === 'sold' ? '<span class="price out">Sold</span>'
     : p.status === 'reserved' ? '<span class="price out">Reserved</span>'
     : (p.price ? `<span class="price">${esc(p.price)}</span>` : '<span class="price out">Inquire for price</span>');
   const ask = p.status === 'sold' ? 'Commission something like it' : 'Inquire';
   return `
-  <figure class="card ${gone?'gone':''}">
+  <figure class="card">
     <div class="frame ${p.shape==='circle'?'circle':''}" data-full="${esc(p.image)}" data-n="${esc(p.title)}"
          data-d="${esc(desc(p))}" data-shape="${esc(p.shape||'rectangle')}">
       ${tag}<img src="${esc(p.image)}" alt="${esc(p.title)}" loading="lazy">
@@ -366,7 +381,7 @@ document.getElementById('muralStrip').innerHTML = murals.map(p => `
          data-d="${esc([p.size, p.year].filter(Boolean).join(' · '))}" data-shape="${esc(p.shape||'rectangle')}">
       <img src="${esc(p.image)}" alt="${esc(p.title)}" loading="lazy">
     </div>
-    <div class="label" style="margin-top:9px">${[p.title, p.size, p.year].filter(Boolean).map(esc).join(' · ')}</div>
+    <div class="label" style="margin-top:9px">${[p.size, p.year].filter(Boolean).map(esc).join(' · ')}</div>
   </div>`).join('');
 
 /* NEWSLETTER — submits through a hidden iframe so it works with any provider,
