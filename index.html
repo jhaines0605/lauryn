@@ -305,7 +305,10 @@ h2{font-size:clamp(19px,3.6vw,26px)}
 </div>
 
 <script>
+let booted = false;
 function boot(){
+  if (booted) return;
+  booted = true;
 const D = window.WORKS || {settings:{}, pieces:[]};
 const S = D.settings || {};
 const pieces = (D.pieces || []).filter(p => p.visible !== false);
@@ -315,7 +318,12 @@ const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c =>
 if (S.accent) document.documentElement.style.setProperty('--accent', S.accent);
 
 /* ---------- copy ---------- */
-document.getElementById('portrait').src = S.portraitImage || '';
+const portraitEl = document.getElementById('portrait');
+if (S.portraitImage) portraitEl.src = S.portraitImage; else portraitEl.style.display = 'none';
+if (!D.settings || !Object.keys(D.settings).length) {
+  const t = document.getElementById('tagline');
+  t.textContent = 'Loading\u2026 if this stays here, reload the page.';
+}
 document.getElementById('tagline').textContent = S.tagline || '';
 document.getElementById('aboutPull').textContent = '';
 document.getElementById('aboutBody').innerHTML =
@@ -340,7 +348,7 @@ document.getElementById('gal').innerHTML = pieces.length ? pieces.map(p => `
   <figure class="piece" data-cat="${esc(p.category)}">
     <div class="frame ${p.shape==='circle'?'circle':''}" data-full="${esc(p.image)}" data-n="${esc(p.title)}"
          data-d="${esc(desc(p))}" data-shape="${esc(p.shape||'rectangle')}">
-      <img src="${esc(p.image)}" alt="${esc(p.title)}" loading="lazy">
+      <img src="${esc(p.image)}" alt="${esc(p.title)}" loading="lazy" decoding="async">
     </div>
     <figcaption class="meta">
       <div class="name">${esc(p.title)}${p.year?` <span class="year">${esc(p.year)}</span>`:''}</div>
@@ -359,7 +367,7 @@ document.getElementById('shopGrid').innerHTML = forSale.length ? forSale.map(p =
   <figure class="card">
     <div class="frame ${p.shape==='circle'?'circle':''}" data-full="${esc(p.image)}" data-n="${esc(p.title)}"
          data-d="${esc(desc(p))}" data-shape="${esc(p.shape||'rectangle')}">
-      ${tag}<img src="${esc(p.image)}" alt="${esc(p.title)}" loading="lazy">
+      ${tag}<img src="${esc(p.image)}" alt="${esc(p.title)}" loading="lazy" decoding="async">
     </div>
     <figcaption class="meta">
       <div class="name">${esc(p.title)}${p.year?` <span class="year">${esc(p.year)}</span>`:''}</div>
@@ -382,7 +390,7 @@ document.getElementById('muralStrip').innerHTML = murals.map(p => `
   <div>
     <div class="frame ${p.shape==='circle'?'circle':''}" data-full="${esc(p.image)}" data-n="${esc(p.title)}"
          data-d="${esc([p.size, p.year].filter(Boolean).join(' · '))}" data-shape="${esc(p.shape||'rectangle')}">
-      <img src="${esc(p.image)}" alt="${esc(p.title)}" loading="lazy">
+      <img src="${esc(p.image)}" alt="${esc(p.title)}" loading="lazy" decoding="async">
     </div>
     <div class="label" style="margin-top:9px">${[p.size, p.year].filter(Boolean).map(esc).join(' · ')}</div>
   </div>`).join('');
@@ -469,21 +477,27 @@ addEventListener('keydown', e => { if(e.key === 'Escape') closeLb(); });
 }
 </script>
 <script>
-/* Load the data, then start the page. The cache key rolls once a minute so a
-   publish shows up quickly; ?fresh skips the cache entirely. If the busted
-   URL fails for any reason, fall back to the plain file so the page still works. */
+/* Load the data file, then start the page.
+   If it is slow or fails, boot anyway after 8 seconds so navigation still works
+   and the visitor sees a real page instead of a half-drawn one. */
 (function(){
-  function add(src, onfail){
+  var done = false;
+  function start(){ if (!done) { done = true; boot(); } }
+
+  function load(src, next){
     var s = document.createElement('script');
     s.src = src;
-    s.onload = boot;
-    s.onerror = onfail || boot;
+    s.onload = start;
+    s.onerror = next || start;
     document.body.appendChild(s);
   }
+
   var v = location.protocol === 'file:' ? ''
         : (location.search.indexOf('fresh') > -1 ? '?v=' + Date.now()
                                                  : '?v=' + Math.floor(Date.now()/60000));
-  add('works.js' + v, function(){ add('works.js'); });
+
+  load('works.js' + v, function(){ load('works.js'); });   // retry without the cache key
+  setTimeout(start, 8000);                                  // last resort
 })();
 </script>
 
