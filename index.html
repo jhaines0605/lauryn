@@ -128,19 +128,31 @@ h2{font-size:clamp(19px,3.6vw,26px)}
 .card .price{font-size:13px}
 .card .ask{font-size:9.5px;letter-spacing:.16em}
 
-/* Round canvases: forced to a true square, so the 50% rounding is a circle
-   and never an oval. Inheriting a stretched height is what caused the oval. */
-.frame.circle{background:transparent}
+/* Round canvases.
+   The SQUARE lives on the frame, not the image. Sizing the frame from the
+   image's own proportions meant that on a slow decode the image could paint at
+   its natural shape for a moment, overflow the frame, and get clipped along the
+   top and sides. The frame's shape is now fixed before the image ever loads. */
+.frame.circle{
+  aspect-ratio:1/1;
+  border-radius:50%;
+  overflow:hidden;
+  background:transparent;
+  display:grid;
+  place-items:center;
+}
 .frame.circle img,
 .card .frame.circle img,
 .mural-strip .frame.circle img{
   width:100%;
-  height:auto;
-  aspect-ratio:1/1;
-  object-fit:contain;
-  border-radius:50%;
+  height:100%;
+  aspect-ratio:auto;      /* the frame decides the shape now */
+  object-fit:contain;     /* whole painting, nothing cropped */
+  border-radius:0;        /* the frame does the rounding */
+  transform:none;         /* no hover scale, which could push past the edge */
 }
-.frame.circle .tag{left:50%;top:auto;bottom:-2px;transform:translateX(-50%);border-radius:100px}
+.frame.circle:hover img{transform:none}
+.frame.circle .tag{left:50%;top:auto;bottom:6px;transform:translateX(-50%);border-radius:100px}
 .lb img.circle{border-radius:50%;aspect-ratio:1/1;object-fit:contain}
 .meta{margin-top:16px}
 .meta .name{font-size:clamp(14px,2.2vw,16px);letter-spacing:.18em;text-transform:uppercase;
