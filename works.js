@@ -72,7 +72,7 @@ window.WORKS = {
     "newsletterField": "email_address",
     "newsletterHead": "First look at new work",
     "newsletterBody": "New paintings go out to this list before they go anywhere else. No spam, just the work.",
-    "updated": "2026-09-02T05:19:35.994Z"
+    "updated": "2026-09-23T03:57:20.414Z"
   },
   "pieces": [
     {
@@ -125,6 +125,40 @@ window.WORKS = {
       "visible": true,
       "inShop": true,
       "shape": "circle"
+    },
+    {
+      "id": "p1790135474113",
+      "title": "The Sierras 1 of 2",
+      "year": "2024",
+      "type": "canvas",
+      "category": "",
+      "medium": "Acrylic on canvas",
+      "size": "8\" x 10\"",
+      "price": "$125",
+      "status": "available",
+      "image": "images/p1790135474113-mudkgpwi.jpg",
+      "imagePosition": "center",
+      "note": "",
+      "visible": true,
+      "inShop": true,
+      "shape": "rectangle"
+    },
+    {
+      "id": "p1790135695726",
+      "title": "The Sierras 2 of 2",
+      "year": "2024",
+      "type": "canvas",
+      "category": "",
+      "medium": "Acrylic on canvas",
+      "size": "8\" x 10\"",
+      "price": "$125",
+      "status": "available",
+      "image": "images/p1790135695726-mudklir9.jpg",
+      "imagePosition": "center",
+      "note": "",
+      "visible": true,
+      "inShop": true,
+      "shape": "rectangle"
     },
     {
       "id": "p1788232883763",
