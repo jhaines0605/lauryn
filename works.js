@@ -72,7 +72,7 @@ window.WORKS = {
     "newsletterField": "email_address",
     "newsletterHead": "First look at new work",
     "newsletterBody": "New paintings go out to this list before they go anywhere else. No spam, just the work.",
-    "updated": "2026-11-03T03:27:32.918Z",
+    "updated": "2026-11-03T04:06:57.722Z",
     "sale": {
       "on": true,
       "percent": 20,
@@ -89,6 +89,23 @@ window.WORKS = {
     }
   },
   "pieces": [
+    {
+      "id": "p1793678632386",
+      "title": "Coyote Skull and Globemallow",
+      "year": "2026",
+      "type": "canvas",
+      "category": "",
+      "medium": "Oil on canvas",
+      "size": "16\"",
+      "price": "$475",
+      "status": "available",
+      "image": "images/p1793678632386-mw05yqv6.jpg",
+      "imagePosition": "center",
+      "note": "",
+      "visible": true,
+      "inShop": true,
+      "shape": "circle"
+    },
     {
       "id": "p1788227953538",
       "title": "",
