@@ -117,10 +117,18 @@ h2{font-size:clamp(19px,3.6vw,26px)}
 .signup input:focus{outline:none;border-color:var(--accent)}
 .signup .msg{margin-top:14px;font-size:13.5px;color:var(--soft);min-height:20px}
 .shopnote{max-width:52ch;margin:0 auto clamp(26px,4vw,40px);color:var(--soft);font-size:15px}
-.shop{display:grid;grid-template-columns:repeat(4,1fr);gap:clamp(16px,2.4vw,30px);
+.shop{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:clamp(22px,3vw,38px) clamp(16px,2.4vw,30px);
   text-align:center;align-items:start}
-@media(max-width:900px){.shop{grid-template-columns:repeat(3,1fr)}}
-@media(max-width:560px){.shop{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:900px){.shop{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:560px){.shop{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.card{margin:0;min-width:0}
+.card .name{overflow-wrap:break-word}
+/* Every shop piece gets the same square of wall space. Round canvases fill it;
+   rectangles sit inside it at their true proportions, on a shared baseline. */
+.card .frame.sq{aspect-ratio:1/1;display:flex;align-items:flex-end;justify-content:center;
+  container-type:size;overflow:visible}
+.card .frame.sq .art{position:relative;line-height:0;max-width:100%;max-height:100%;overflow:hidden}
+.card .frame.sq .art img{width:auto;height:auto;max-width:100cqw;max-height:100cqh}
 .card .meta{margin-top:11px}
 .card .name{font-size:11.5px;letter-spacing:.14em}
 .card .desc{font-size:11.5px;margin-top:4px}
@@ -529,9 +537,11 @@ function shopCards(){
     const buy = buyable(p) ? `<button class="ask buy" data-add="${esc(p.id)}" ${inCart ? 'disabled' : ''}>${inCart ? 'In cart' : 'Add to cart'}</button>` : '';
     return `
     <figure class="card">
-      <div class="frame ${p.shape==='circle'?'circle':''}" data-full="${esc(p.image)}" data-n="${esc(p.title)}"
+      <div class="frame ${p.shape==='circle'?'circle':'sq'}" data-full="${esc(p.image)}" data-n="${esc(p.title)}"
            data-d="${esc(desc(p))}" data-shape="${esc(p.shape||'rectangle')}">
-        ${tag}<img src="${esc(p.image)}" alt="${esc(p.title)}" loading="lazy" decoding="async">
+        ${p.shape==='circle'
+          ? `${tag}<img src="${esc(p.image)}" alt="${esc(p.title)}" loading="lazy" decoding="async">`
+          : `<span class="art">${tag}<img src="${esc(p.image)}" alt="${esc(p.title)}" loading="lazy" decoding="async"></span>`}
       </div>
       <figcaption class="meta">
         <div class="name">${esc(p.title)}${p.year?` <span class="year">${esc(p.year)}</span>`:''}</div>
