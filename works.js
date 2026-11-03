@@ -72,13 +72,13 @@ window.WORKS = {
     "newsletterField": "email_address",
     "newsletterHead": "First look at new work",
     "newsletterBody": "New paintings go out to this list before they go anywhere else. No spam, just the work.",
-    "updated": "2026-11-03T03:10:25.733Z",
+    "updated": "2026-11-03T03:25:20.299Z",
     "sale": {
       "on": true,
       "percent": 20,
       "scope": "prints",
       "text": "",
-      "ends": ""
+      "ends": "2026-12-01"
     },
     "shop": {
       "checkoutUrl": "https://lauryn-checkout.jhaines0605.workers.dev",
