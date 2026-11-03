@@ -72,7 +72,21 @@ window.WORKS = {
     "newsletterField": "email_address",
     "newsletterHead": "First look at new work",
     "newsletterBody": "New paintings go out to this list before they go anywhere else. No spam, just the work.",
-    "updated": "2026-09-23T03:57:20.414Z"
+    "updated": "2026-11-03T03:10:25.733Z",
+    "sale": {
+      "on": true,
+      "percent": 20,
+      "scope": "prints",
+      "text": "",
+      "ends": ""
+    },
+    "shop": {
+      "checkoutUrl": "https://lauryn-checkout.jhaines0605.workers.dev",
+      "printShipping": "$5.99",
+      "originalShipping": "",
+      "localDelivery": true,
+      "localLabel": ""
+    }
   },
   "pieces": [
     {
