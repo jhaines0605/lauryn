@@ -72,7 +72,7 @@ window.WORKS = {
     "newsletterField": "email_address",
     "newsletterHead": "First look at new work",
     "newsletterBody": "New paintings go out to this list before they go anywhere else. No spam, just the work.",
-    "updated": "2026-11-03T04:06:57.722Z",
+    "updated": "2026-11-03T04:07:20.718Z",
     "sale": {
       "on": true,
       "percent": 20,
@@ -97,7 +97,7 @@ window.WORKS = {
       "category": "",
       "medium": "Oil on canvas",
       "size": "16\"",
-      "price": "$475",
+      "price": "$450",
       "status": "available",
       "image": "images/p1793678632386-mw05yqv6.jpg",
       "imagePosition": "center",
