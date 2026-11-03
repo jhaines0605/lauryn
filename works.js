@@ -72,7 +72,7 @@ window.WORKS = {
     "newsletterField": "email_address",
     "newsletterHead": "First look at new work",
     "newsletterBody": "New paintings go out to this list before they go anywhere else. No spam, just the work.",
-    "updated": "2026-11-03T04:09:22.169Z",
+    "updated": "2026-11-03T04:14:01.762Z",
     "sale": {
       "on": true,
       "percent": 20,
@@ -99,7 +99,7 @@ window.WORKS = {
       "size": "16\"",
       "price": "$450",
       "status": "available",
-      "image": "images/p1793678632386-mw05yqv6.jpg",
+      "image": "images/coyote-skull-and-desert-globemallow-mw06axhj.jpg",
       "imagePosition": "center",
       "note": "",
       "visible": true,
