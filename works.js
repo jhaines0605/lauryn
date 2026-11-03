@@ -72,7 +72,7 @@ window.WORKS = {
     "newsletterField": "email_address",
     "newsletterHead": "First look at new work",
     "newsletterBody": "New paintings go out to this list before they go anywhere else. No spam, just the work.",
-    "updated": "2026-11-03T04:07:20.718Z",
+    "updated": "2026-11-03T04:09:22.169Z",
     "sale": {
       "on": true,
       "percent": 20,
@@ -91,7 +91,7 @@ window.WORKS = {
   "pieces": [
     {
       "id": "p1793678632386",
-      "title": "Coyote Skull and Globemallow",
+      "title": "Coyote Skull and Desert Globemallow",
       "year": "2026",
       "type": "canvas",
       "category": "",
