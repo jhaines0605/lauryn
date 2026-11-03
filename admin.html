@@ -78,6 +78,27 @@ details.panel summary{cursor:pointer;font-family:var(--label);font-size:11px;let
 .tagrow .cnt{font-family:var(--label);font-size:10px;letter-spacing:.1em;color:#8A8496;white-space:nowrap}
 .tagrow .eye{border-color:var(--line);color:#8A8496}
 .tagrow .eye.on{border-color:#1B7A4B;color:#1B7A4B}
+
+/* sale panel */
+.sale{border-color:var(--ink)}
+.sale.live{border-color:var(--clay);box-shadow:4px 4px 0 var(--clay)}
+.salehead{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.salehead h2{margin:0}
+.sw{position:relative;width:62px;height:34px;flex:0 0 auto;padding:0;border:2px solid var(--ink);
+  border-radius:100px;background:#fff;cursor:pointer}
+.sw:hover{background:#fff}
+.sw::after{content:"";position:absolute;top:3px;left:3px;width:24px;height:24px;border-radius:50%;
+  background:var(--ink);transition:left .2s}
+.sw.on{background:var(--clay);border-color:var(--clay)}
+.sw.on::after{left:31px;background:#fff}
+.salestate{font-family:var(--label);font-size:11px;letter-spacing:.14em;text-transform:uppercase}
+.preview{margin-top:14px;border:1.5px dashed var(--line);background:#fff}
+.preview .pv-run{background:#4E9BE0;color:#fff;text-align:center;font-family:"Raleway",var(--body);
+  font-size:11px;letter-spacing:.26em;text-transform:uppercase;padding:9px 12px}
+.preview .pv-ex{padding:12px;text-align:center;font-size:14px;color:#4A4A4A}
+.preview .pv-ex s{color:#8E8E8E;margin-right:8px}
+.preview .pv-ex b{font-weight:600}
+.preview .off{padding:12px;text-align:center;color:#8A8496;font-size:13px}
 </style>
 </head>
 <body>
@@ -95,6 +116,42 @@ details.panel summary{cursor:pointer;font-family:var(--label);font-size:11px;let
 </div>
 
 <div class="wrap">
+
+  <div class="panel sale" id="salePanel">
+    <div class="salehead">
+      <h2>Sale</h2>
+      <button class="sw" id="saleSw" aria-label="Turn the sale on or off" aria-pressed="false"></button>
+      <span class="salestate" id="saleState">Off</span>
+    </div>
+    <p class="note">Flip the switch, pick what's on sale, then hit <strong>Publish</strong>. The banner, the crossed-out
+      prices and the checkout discount all update together. It turns itself off after the end date.</p>
+    <div class="grid">
+      <div class="f"><label class="lab">Percent off</label><input id="salePct" type="number" min="1" max="90" step="1" inputmode="numeric"></div>
+      <div class="f"><label class="lab">What's on sale</label>
+        <select id="saleScope">
+          <option value="prints">Prints only</option>
+          <option value="originals">Original paintings only</option>
+          <option value="all">Everything (sitewide)</option>
+        </select></div>
+      <div class="f"><label class="lab">Ends after (optional)</label><input id="saleEnds" type="date"></div>
+      <div class="f"><label class="lab">Banner wording (optional — leave blank for automatic)</label><input id="saleText" maxlength="60"></div>
+    </div>
+    <div class="preview" id="salePreview"></div>
+  </div>
+
+  <details class="panel" id="shopPanel">
+    <summary>Shop &amp; checkout</summary>
+    <p class="note">Leave the checkout address blank and the shop works like before (Inquire only, no cart).</p>
+    <div class="grid" style="margin-top:12px">
+      <div class="f full"><label class="lab">Checkout address (from Cloudflare)</label>
+        <input id="shUrl" placeholder="https://lauryn-checkout.YOURNAME.workers.dev"></div>
+      <div class="f"><label class="lab">Print shipping (flat, per order)</label><input id="shPrint" placeholder="$5.99"></div>
+      <div class="f"><label class="lab">Default shipping for originals (per piece)</label><input id="shOrig" placeholder="blank = local delivery or quote"></div>
+      <div class="f"><label class="lab">Free local delivery</label>
+        <select id="shLocal"><option value="true">Offered</option><option value="false">Not offered</option></select></div>
+      <div class="f"><label class="lab">Local delivery wording</label><input id="shLocalLabel" placeholder="Free local delivery · Reno / Sparks"></div>
+    </div>
+  </details>
 
   <details class="panel" id="ghPanel">
     <summary>Publishing setup — connect to GitHub (one time)</summary>
@@ -190,6 +247,51 @@ $('sBody').addEventListener('input', e => { S.aboutPull=''; S.aboutBody = e.targ
 $('sShop').value = String(S.showShop !== false);
 $('sShop').addEventListener('change', e => S.showShop = e.target.value === 'true');
 
+/* ---------------- sale ---------------- */
+if (!S.sale) S.sale = { on:false, percent:20, scope:'prints', text:'', ends:'' };
+const SL = S.sale;
+const SCOPE_WORDS = { prints:'all prints', originals:'all original paintings', all:'all artwork' };
+const toCents = s => { const n = parseFloat(String(s==null?'':s).replace(/[^0-9.]/g,'')); return isFinite(n)&&n>0 ? Math.round(n*100) : null; };
+const money = c => '$' + (c % 100 ? (c/100).toFixed(2) : String(c/100)).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+$('salePct').value = SL.percent || 20;
+$('saleScope').value = SL.scope || 'prints';
+$('saleEnds').value = SL.ends || '';
+$('saleText').value = SL.text || '';
+function salePreview(){
+  const pct = Math.min(90, Math.max(0, parseInt(SL.percent,10) || 0));
+  const expired = SL.ends && Date.now() > new Date(SL.ends + 'T23:59:59').getTime();
+  const live = SL.on && pct && !expired;
+  $('saleSw').classList.toggle('on', !!SL.on);
+  $('saleSw').setAttribute('aria-pressed', String(!!SL.on));
+  $('salePanel').classList.toggle('live', !!live);
+  $('saleState').textContent = !SL.on ? 'Off' : expired ? 'On — but the end date has passed' : !pct ? 'On — set a percent' : 'On — publish to go live';
+  $('saleText').placeholder = `${pct || 20}% off ${SCOPE_WORDS[SL.scope] || 'all artwork'}`;
+  if (!live) { $('salePreview').innerHTML = '<div class="off">No sale showing on the site.</div>'; return; }
+  const line = (SL.text || '').trim() || `${pct}% off ${SCOPE_WORDS[SL.scope]}`;
+  const ends = SL.ends ? ' · through ' + new Date(SL.ends + 'T12:00:00').toLocaleDateString('en-US',{month:'short',day:'numeric'}) : '';
+  const ex = P.find(p => p.status === 'available' && toCents(p.price) && p.type !== 'mural' &&
+    (SL.scope === 'all' || (SL.scope === 'prints' ? p.type === 'print' : p.type !== 'print')));
+  const n = P.filter(p => p.status === 'available' && toCents(p.price) && p.type !== 'mural' &&
+    (SL.scope === 'all' || (SL.scope === 'prints' ? p.type === 'print' : p.type !== 'print'))).length;
+  $('salePreview').innerHTML = `<div class="pv-run">${esc(line + ends)}</div>` + (ex
+    ? `<div class="pv-ex">${esc(ex.title || 'Untitled')}: <s>${money(toCents(ex.price))}</s><b>${money(Math.round(toCents(ex.price)*(100-pct)/100))}</b>
+       <span class="lab" style="margin-left:8px">${n} piece${n===1?'':'s'} on sale</span></div>`
+    : `<div class="pv-ex" style="color:#C0634F">Nothing available matches this sale yet.</div>`);
+}
+$('saleSw').addEventListener('click', () => { SL.on = !SL.on; salePreview(); });
+$('salePct').addEventListener('input', e => { SL.percent = parseInt(e.target.value,10) || 0; salePreview(); });
+$('saleScope').addEventListener('change', e => { SL.scope = e.target.value; salePreview(); });
+$('saleEnds').addEventListener('input', e => { SL.ends = e.target.value; salePreview(); });
+$('saleText').addEventListener('input', e => { SL.text = e.target.value; salePreview(); });
+
+/* ---------------- shop & checkout ---------------- */
+if (!S.shop) S.shop = { checkoutUrl:'', printShipping:'$5.99', originalShipping:'', localDelivery:true, localLabel:'' };
+const SHP = S.shop;
+[['shUrl','checkoutUrl'],['shPrint','printShipping'],['shOrig','originalShipping'],['shLocalLabel','localLabel']]
+  .forEach(([el,key]) => { $(el).value = SHP[key] || ''; $(el).addEventListener('input', e => SHP[key] = e.target.value.trim()); });
+$('shLocal').value = String(SHP.localDelivery !== false);
+$('shLocal').addEventListener('change', e => SHP.localDelivery = e.target.value === 'true');
+
 /* ---------------- tags ---------------- */
 const TYPES = {canvas:'Original canvas', mural:'Mural', print:'Print'};
 const STATUSES = ['available','reserved','sold','commissioned'];
@@ -276,6 +378,7 @@ function render(){
           <div class="f"><label class="lab">Size</label><input data-k="size" data-i="${i}" value="${esc(p.size)}" placeholder="24 × 36 in"></div>
           <div class="f"><label class="lab">Price</label><input data-k="price" data-i="${i}" value="${esc(p.price)}" placeholder="$1,850"></div>
           <div class="f"><label class="lab">Note (edition, etc.)</label><input data-k="note" data-i="${i}" value="${esc(p.note)}"></div>
+          ${p.type === 'print' ? '' : `<div class="f"><label class="lab">Shipping for this piece</label><input data-k="shipping" data-i="${i}" value="${esc(p.shipping)}" placeholder="${esc(SHP.originalShipping ? 'default ' + SHP.originalShipping : 'blank = local or quote')}"></div>`}
           <div class="f full"><label class="lab">Photo from this device</label><input type="file" accept="image/*" data-file="${i}"></div>
           <div class="f full"><label class="lab">Image path or URL</label><input data-k="image" data-i="${i}" value="${esc(p.image)}"></div>
         </div>`}
@@ -283,6 +386,7 @@ function render(){
       </div>
     </div>`).join('') || '<p class="note" style="text-align:center;padding:30px 0">No pieces yet. Hit <strong>+ Add a piece</strong> above, give it a title and price, and pick a photo from this device.</p>';
   reopen(wasOpen);
+  salePreview();
 }
 
 function reopen(set){ document.querySelectorAll('.card').forEach(c => { if (set.has(c.dataset.i)) c.classList.add('open'); }); }

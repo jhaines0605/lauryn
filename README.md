@@ -1,130 +1,45 @@
-# Lauryn Haines — site
+# Checkout — setup
 
-Four things. No build step, no framework, no server.
+The site's cart sends orders here; this worker checks every price against the live
+`works.js`, applies the sale, and hands the buyer to a Stripe checkout page.
+The Stripe secret key lives only in Cloudflare — never in the repo.
 
-```
-index.html      the site
-admin.html      your editor (not linked from anywhere)
-works.js        all the data — art, prices, statuses, copy, settings
-images/         photos
-```
+## 1. Stripe (Lauryn's account)
+1. Sign up at stripe.com, then finish **Activate payments**: business details, bank account, identity.
+   Business type "Individual / sole proprietor" is normal for an artist.
+2. **Settings → Business → Public details**: statement descriptor (e.g. `LAURYN HAINES ART`), support email.
+3. **Settings → Tax**: set the origin address (where art ships from), then **Registrations → Add → Nevada**.
+   Only add Nevada. Stripe then collects Nevada tax on Nevada orders and nothing elsewhere.
+4. **Settings → Customer emails**: turn on *Successful payments* so buyers get receipts.
+5. **Developers → API keys**: copy the **Secret key**. Start with the **test** key (`sk_test_…`).
 
-`index.html` reads `works.js` and builds the pages from it. `admin.html` edits `works.js`.
-Nothing is hardcoded.
+## 2. Cloudflare (John's account, free plan)
+1. dash.cloudflare.com → **Workers & Pages → Create → Create Worker** → name it `lauryn-checkout` → Deploy.
+2. **Edit code** → delete the sample → paste all of `worker.js` → **Deploy**.
+3. Worker → **Settings → Variables and Secrets**:
+   - `STRIPE_SECRET_KEY` — type **Secret** — the `sk_test_…` key
+   - `SITE_URL` — Text — `https://laurynhaines.com`
+4. Copy the worker's address (`https://lauryn-checkout.<you>.workers.dev`). Opening it should show `{"ok":true…}`.
 
-`preview.html` is a throwaway snapshot for viewing in chat. **Do not put it in the repo.**
+## 3. Turn on the cart
+Admin → **Shop & checkout** → paste the worker address → set print shipping → **Publish**.
+"Add to cart" appears on the site about a minute later.
 
----
+## 4. Test, then go live
+- Buy a print with card `4242 4242 4242 4242`, any future date, any CVC, a Nevada address.
+  Check the Stripe page shows the sale line, $5.99 shipping, and tax. Payment lands in Stripe → Payments (test mode).
+- Try local delivery with a Reno ZIP.
+- Then swap `STRIPE_SECRET_KEY` for the live `sk_live_…` key. Nothing else changes.
 
-## Setup
+## After each sale
+- **Originals:** mark the piece **sold** in admin and Publish, so nobody else can buy it.
+- **Local delivery orders:** the buyer's address and phone are on the payment in Stripe.
+- **Shipped orders:** ship to the address on the payment.
 
-### 1. Build the folder on your PC
-
-```
-lauryn/
-  index.html
-  admin.html
-  works.js
-  images/
-    bighorn.jpg
-```
-
-### 2. Get the one photo you need to start
-
-The site ships with an empty gallery on purpose — you add art one piece at a time
-from the admin, on whatever device you're holding. The only file you need up front
-is her portrait for the Home page. In the `lauryn` folder:
-
-```bash
-mkdir -p images && cd images
-curl -L -o portrait.jpg "https://laurynhaines.com/assets/images/image01.jpg?v=f1feaf88"
-```
-
-No terminal? Open laurynhaines.com, long-press or right-click the round photo,
-Save Image As, name it `portrait.jpg`, put it in `images/`.
-
-### 3. Check it locally
-
-Double-click `index.html`. Her portrait should be on Home, About and Contact should
-read correctly, and Art and Shop should say new work is coming. That's the right
-starting state.
-
-### 4. Set the basics
-
-Open `admin.html` (same folder) → **Site settings**. Put your own email in the contact
-field for now. Everything else is already filled in.
-
-Hit **Download works.js** and replace the old one.
-
-### 5. Put it online
-
-New GitHub repo called `lauryn` → drag the folder contents in → Settings → Pages →
-Source `main`, folder `/ (root)`. A minute later you're live at
-`https://YOURNAME.github.io/lauryn/`, with the editor at `.../lauryn/admin.html`.
-
-Leave `laurynhaines.com` pointed at Carrd for now.
-
-### 6. Turn on the contact form
-
-Sign up at formspree.io, create a form, copy the ID out of the endpoint URL, paste it
-into admin → Site settings → Formspree form ID. Publish, then send yourself a test
-message and confirm it arrives.
-
-### 7. Show her, then switch the domain
-
-Once she's happy: GitHub repo → Settings → Pages → Custom domain → `laurynhaines.com`.
-At your registrar, point the A records to `185.199.108.153`, `185.199.109.153`,
-`185.199.110.153`, `185.199.111.153`, and CNAME `www` to `YOURNAME.github.io`.
-Tick **Enforce HTTPS** once it validates. Give it up to an hour.
-
----
-
-## Publishing from your phone
-
-Admin → *Publishing setup*: your GitHub username, repo (`lauryn`), branch (`main`),
-path (`works.js`), and a token.
-
-Token: GitHub → Settings → Developer settings → **Personal access tokens** →
-**Fine-grained tokens** → Generate new. Repository access: only `lauryn`.
-Repository permissions: **Contents → Read and write**. Nothing else. Copy it once.
-
-Paste it in, Save settings. It's stored in that browser only — never in the repo,
-never on the live site. Now **Publish** writes straight to GitHub from anywhere.
-If it ever leaks, the worst case is someone edits this one file. Revoke and reissue.
-
-Without a token, **Download works.js** does the same job — it just needs a computer.
-
----
-
-## Day-to-day
-
-**Mark a piece sold** — open admin, tap `sold`, Publish. It stays on the site with a
-Sold tag, the price is replaced, and its link becomes "Commission something like it."
-Sold work is worth keeping visible; it's the strongest proof a buyer has that other
-people are buying.
-
-**Statuses** — `available` (price shows, no tag), `reserved`, `sold`, `commissioned`
-(for murals and client work, so no price appears).
-
-**Add a piece from your phone** — *+ Add a piece* → title, year, medium, size, price →
-*Replace image from this device* → pick the photo. It's resized to 1600px in the browser,
-so the file stays small. Set the status and the in-shop toggle, then Publish. About a
-minute later it's on the site.
-
-**Watch the size counter** in the admin header. Photos added from a device are stored
-inside `works.js` itself. That's fine for a few dozen pieces — it turns amber past about
-3.5 MB. If it gets there, move the biggest images into the `images/` folder and point
-the image field at the file path instead.
-
-**Hide without deleting** — the Hide button, for work that isn't photographed well yet.
-
----
-
-## Known limits
-
-- **One URL.** The whole site is one page swapping views, so Google indexes it as a
-  single page. Fine for now.
-- **Admin is unlisted, not locked.** Anyone with the URL can open the editor, but they
-  can't publish without your token. `noindex` keeps it out of search results.
-- **Inquire emails you.** It prefills the contact form rather than taking payment.
-  Stripe Payment Links are the easy upgrade when she wants to sell prints directly.
+## Variables
+| Name | Default | |
+|---|---|---|
+| `STRIPE_SECRET_KEY` | — | required |
+| `SITE_URL` | `https://laurynhaines.com` | where `works.js` and images are read from |
+| `ALLOWED_ORIGINS` | site + www | comma list, only if the site moves |
+| `AUTO_TAX` | `true` | `false` turns off Stripe Tax |
