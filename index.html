@@ -497,7 +497,7 @@ const unitCents = p => { const c = toCents(p.price); return c == null ? null : o
 /* the runner along the top */
 if (SALE) {
   const r = document.getElementById('runner');
-  const ends = SALE.ends ? ' · through ' + new Date(SALE.ends + 'T12:00:00').toLocaleDateString('en-US', {month:'short', day:'numeric'}) : '';
+  const ends = SALE.ends ? ' · through\u00a0' + new Date(SALE.ends + 'T12:00:00').toLocaleDateString('en-US', {month:'short', day:'numeric'}).replace(/ /g, '\u00a0') : '';
   r.innerHTML = esc(saleLine(SALE) + ends) + (S.showShop === false ? '' : '<a href="#shop">Shop</a>');
   r.classList.add('on');
 }
