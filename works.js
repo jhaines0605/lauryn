@@ -72,7 +72,7 @@ window.WORKS = {
     "newsletterField": "email_address",
     "newsletterHead": "First look at new work",
     "newsletterBody": "New paintings go out to this list before they go anywhere else. No spam, just the work.",
-    "updated": "2026-11-03T04:14:01.762Z",
+    "updated": "2026-11-06T01:29:47.234Z",
     "sale": {
       "on": true,
       "percent": 20,
@@ -198,7 +198,7 @@ window.WORKS = {
       "type": "print",
       "category": "",
       "medium": "Print",
-      "size": "",
+      "size": "12\" x 12\"",
       "price": "$40",
       "status": "available",
       "image": "images/torch-ginger-mtjnaybr729.jpg",
