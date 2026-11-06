@@ -72,7 +72,7 @@ window.WORKS = {
     "newsletterField": "email_address",
     "newsletterHead": "First look at new work",
     "newsletterBody": "New paintings go out to this list before they go anywhere else. No spam, just the work.",
-    "updated": "2026-11-06T01:29:47.234Z",
+    "updated": "2026-11-06T01:30:16.672Z",
     "sale": {
       "on": true,
       "percent": 20,
@@ -232,12 +232,12 @@ window.WORKS = {
       "type": "print",
       "category": "",
       "medium": "Print",
-      "size": "",
+      "size": "6\" x 8\"",
       "price": "$40",
       "status": "available",
       "image": "images/kauai-mtjnaybr287.jpg",
       "imagePosition": "center",
-      "note": "Limited edition of 20",
+      "note": "Limited edition of 10",
       "visible": true,
       "inShop": true,
       "shape": "rectangle"
