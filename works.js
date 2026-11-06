@@ -72,7 +72,7 @@ window.WORKS = {
     "newsletterField": "email_address",
     "newsletterHead": "First look at new work",
     "newsletterBody": "New paintings go out to this list before they go anywhere else. No spam, just the work.",
-    "updated": "2026-11-06T01:30:16.672Z",
+    "updated": "2026-11-06T01:31:09.490Z",
     "sale": {
       "on": true,
       "percent": 20,
@@ -203,7 +203,7 @@ window.WORKS = {
       "status": "available",
       "image": "images/torch-ginger-mtjnaybr729.jpg",
       "imagePosition": "center",
-      "note": "Limited edition of 20",
+      "note": "Limited edition of 10",
       "visible": true,
       "inShop": true,
       "shape": "rectangle"
@@ -215,7 +215,7 @@ window.WORKS = {
       "type": "print",
       "category": "",
       "medium": "Print",
-      "size": "",
+      "size": "6.5\" x 8.5\"",
       "price": "$40",
       "status": "available",
       "image": "images/makena-beach-mtjnaybr726.jpg",
