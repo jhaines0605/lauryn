@@ -72,7 +72,7 @@ window.WORKS = {
     "newsletterField": "email_address",
     "newsletterHead": "First look at new work",
     "newsletterBody": "New paintings go out to this list before they go anywhere else. No spam, just the work.",
-    "updated": "2026-11-06T01:31:09.490Z",
+    "updated": "2026-11-28T15:23:51.123Z",
     "sale": {
       "on": true,
       "percent": 20,
@@ -89,6 +89,23 @@ window.WORKS = {
     }
   },
   "pieces": [
+    {
+      "id": "p1795879313530",
+      "title": "Field Mouse and Desert Peach",
+      "year": "2026",
+      "type": "canvas",
+      "category": "",
+      "medium": "Oil on canvas",
+      "size": "8\" circle",
+      "price": "",
+      "status": "available",
+      "image": "images/field-mouse-and-desert-peach-mx0k88nc.jpg",
+      "imagePosition": "center",
+      "note": "",
+      "visible": true,
+      "inShop": true,
+      "shape": "circle"
+    },
     {
       "id": "p1793678632386",
       "title": "Coyote Skull and Desert Globemallow",
