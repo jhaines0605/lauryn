@@ -72,7 +72,7 @@ window.WORKS = {
     "newsletterField": "email_address",
     "newsletterHead": "First look at new work",
     "newsletterBody": "New paintings go out to this list before they go anywhere else. No spam, just the work.",
-    "updated": "2026-11-28T16:17:00.228Z",
+    "updated": "2026-11-28T16:22:18.904Z",
     "sale": {
       "on": true,
       "percent": 20,
@@ -99,7 +99,7 @@ window.WORKS = {
       "size": "8\"",
       "price": "175",
       "status": "available",
-      "image": "images/field-mouse-and-desert-peach-mx0m524y.jpg",
+      "image": "images/field-mouse-and-desert-peach-mx0mbnt7.jpg",
       "imagePosition": "center",
       "note": "",
       "visible": true,
